@@ -10,7 +10,6 @@ import Graphics.UI.GLUT
 import Data.IORef
 import System.Exit
 import Display
---import InputState
 
 reshape s@(Size w h) = do 
 	viewport $= (Position 0 0, s)
@@ -45,9 +44,7 @@ keyboardAct _ _ _ _ = return ()
 
 
 mouseAct (Position x y) = do
-	(px,py) <- get p
-	px $= x
-	py $= y
+	return ()
 
 keyboardMouse angle pos key state modifiers position = do
 	keyboardAct angle pos key state

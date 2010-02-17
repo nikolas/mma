@@ -1,9 +1,9 @@
--- let's copy (some of) Raincat for some basic gfx....
-
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 import Data.IORef
 import Bindings
+import State
+import Points
 
 main = do
 	(progname,_) <- getArgsAndInitialize
@@ -12,6 +12,9 @@ main = do
 	createWindow "mma"
 	reshapeCallback $= Just reshape
 
+	startState <- guiInit
+
+	globalState <- newIORef startState
 	angle <- newIORef (0.0::GLfloat)
 	delta <- newIORef (0.1::GLfloat)
 	position <- newIORef (0.0::GLfloat, 0.0)
@@ -19,8 +22,14 @@ main = do
 
 	-- input
 	keyboardMouseCallback $= Just (keyboardMouse delta position)
-	motionCallback $= Just (mouseAct mousePos)
+--	motionCallback $= Just (mouseAct (IORef mousePos))
 
 	idleCallback $= Just (idle angle delta)
 	displayCallback $= (display angle position)
 	mainLoop
+
+guiInit :: IO (GlobalState)
+guiInit = do
+	keys <- newIORef $ KeysState False False False False False False False
+	mp <- newIORef $ MousePos 0 0
+	return (GlobalState keys mp (points 8))
