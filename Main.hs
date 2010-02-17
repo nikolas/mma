@@ -1,25 +1,26 @@
 -- let's copy (some of) Raincat for some basic gfx....
 
+import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
-import System.Exit
+import Data.IORef
+import Bindings
 
-main :: IO ()
 main = do
-	initWindow (Size (truncate 800.0) (truncate 600.0)) "mma"
-	mainLoop
-
-exitMain :: IO ()
-exitMain = do
-	exitSuccess
-
-
-initWindow :: Size -> [Char] -> IO ()
-initWindow windowSize windowTitle = do
-	getArgsAndInitialize
-
-	initialWindowSize $= windowSize
+	(progname,_) <- getArgsAndInitialize
 	initialDisplayMode $= [DoubleBuffered]
 
-	createWindow windowTitle
+	createWindow "mma"
+	reshapeCallback $= Just reshape
 
-	return ()
+	angle <- newIORef (0.0::GLfloat)
+	delta <- newIORef (0.1::GLfloat)
+	position <- newIORef (0.0::GLfloat, 0.0)
+	mousePos <- newIORef (Position 0 0)
+
+	-- input
+	keyboardMouseCallback $= Just (keyboardMouse delta position)
+	motionCallback $= Just (mouseAct mousePos)
+
+	idleCallback $= Just (idle angle delta)
+	displayCallback $= (display angle position)
+	mainLoop

@@ -3,7 +3,8 @@ Marlon Moonglow's Animator     ***
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                                     **~~~~~~
 
-Right now this is repository is for me to practice my Haskell programming. It
-contains a little text-based animation thing.
+Just messing around with OpenGL animation. Based off Raincat and this
+tutorial: http://www.haskell.org/haskellwiki/OpenGLTutorial2
+
 
 Project website: http://grace.evergreen.edu/~nybnik10/mma/
