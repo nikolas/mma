@@ -15,9 +15,8 @@ data State = State
 	{
 		--keysState :: IORef KeysState,
 		--mousePos :: IORef MousePos,
-		variable :: Variables,
-		sprites :: [Sprite],
-		keys :: [[Key]]
+		variables :: Variables,
+		sprites :: [Sprite]
 	}
 
 data Variables = Variables {
@@ -27,26 +26,16 @@ data Variables = Variables {
 elapsedTimeInSeconds :: Variables -> Int
 elapsedTimeInSeconds (Variables i) = i
 
-{-data KeysState = KeysState
-	{
-		leftKeyDown     :: Bool,
-		rightKeyDown    :: Bool,
-		downKeyDown     :: Bool,
-		upKeyDown       :: Bool,
-		leftMouseDown   :: Bool,
-		spaceKeyDown    :: Bool,
-		escKeyDown      :: Bool
-	}
-
-data MousePos = MousePos
-	{
-		mouseX  :: Int,
-		mouseY  :: Int
-	}-}
-
--- for now
 data Sprite =
 	Square {
 		spritePos :: Complex GLfloat,
 		spriteColor :: Color3 GLfloat
 	}
+
+updateState :: [Key] -> State -> State
+updateState keys (State variable sprites) = State newVars newSprites
+	where
+	-- add a sprite to the screen
+	if addSpriteButton `elem` keys then 
+
+addSpriteButton = Char 'z'

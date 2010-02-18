@@ -2,7 +2,6 @@ import Data.IORef
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 import System.Exit
-import Bindings
 import Display
 import State
 import Points
@@ -25,22 +24,6 @@ main = do
 
 	initMatrix
 	mainLoop
-
-	--reshapeCallback $= Just reshape
-	--startState <- guiInit
-	{-globalState <- newIORef startState
-	angle <- newIORef (0.0::GLdouble)
-	delta <- newIORef (0.1::GLdouble)
-	position <- newIORef (0.0::GLdouble, 0.0)
-	mousePos <- newIORef (Position 0 0)
-
-	-- input
-	keyboardMouseCallback $= Just (keyboardMouse delta position)
---	motionCallback $= Just (mouseAct (IORef mousePos))
-
-	idleCallback $= Just (idle angle delta)
-	displayCallback $= (display angle position)
-	mainLoop-}
 
 keyProc keystate key ks mod pos =
 	case (key,ks) of
@@ -73,6 +56,7 @@ dispProc ref = do
 mainProc :: Variables -> IORef [Key] -> IO Scene
 mainProc vars ks = do
 	keystate <- readIORef ks
+	--modifyIORef gs (updateState keystate)
 	clear [ColorBuffer]
 	matrixMode $= Modelview 0
 	loadIdentity

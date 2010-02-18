@@ -1,16 +1,9 @@
-module Bindings (
-	reshape,
-	keyboardMouse,
-	mouseAct
-) where
 import Data.IORef
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 import System.Exit
 import Display
 
-reshape s@(Size w h) = do 
-	viewport $= (Position 0 0, s)
 
 keyboardAct a p (Char ' ') Down = do
 	a' <- get a
