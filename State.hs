@@ -1,17 +1,23 @@
 module State (
-	GlobalState(GlobalState),
+	State(State),
 	KeysState(KeysState),
 	MousePos(MousePos)
 ) where
 import Data.IORef
+import Data.Complex
 import Graphics.Rendering.OpenGL
 
-data GlobalState = GlobalState
+data State = State
 	{
-		keysState :: IORef KeysState,
-		mousePos :: IORef MousePos,
+		--keysState :: IORef KeysState,
+		--mousePos :: IORef MousePos,
+		variable :: Variables
 		sprites :: [Sprite]
 	}
+
+data Variables = Variables {
+	clock :: Int
+}
 
 data KeysState = KeysState
 	{
@@ -31,4 +37,8 @@ data MousePos = MousePos
 	}
 
 -- for now
-type Sprite = (GLfloat, GLfloat, GLfloat)
+data Sprite =
+	Square {
+		position :: Complex GLfloat,
+		color :: Color3 GLfloat
+	}

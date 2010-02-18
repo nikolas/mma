@@ -3,8 +3,11 @@ Marlon Moonglow's Animator     ***
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                                     **~~~~~~
 
-Just messing around with OpenGL animation. Based off Raincat and this
-tutorial: http://www.haskell.org/haskellwiki/OpenGLTutorial2
+Just messing around with OpenGL right now...
 
+Influences:
+	* Raincat: http://bysusanlin.com/raincat/
+	* This tutorial: http://www.haskell.org/haskellwiki/OpenGLTutorial2
+	* Monadius: http://www.geocities.jp/takascience/haskell/monadius_en.html
 
 Project website: http://grace.evergreen.edu/~nybnik10/mma/

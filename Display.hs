@@ -1,9 +1,12 @@
-module Display (display,idle) where
+module Display (
+	display,idle
+) where
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 import Data.IORef
 import Cube
 import Points
+import State
 
 display angle position = do 
 	clear [ColorBuffer]
@@ -26,4 +29,42 @@ idle angle delta = do
 	a <- get angle
 	d <- get delta
 	angle $= a + d
-	postRedisplay Nothing -- Only required on Mac OS X, which double-buffers internally 
+	postRedisplay Nothing -- Only required on Mac OS X, which double-buffers internally
+
+{-data Rect = Rect
+	{
+		rectX :: Double,
+		rectY :: Double,
+		rectWidth :: Double,
+		rectHeight :: Double
+	} deriving Show-}
+
+renderState :: State -> IO ()
+renderState (State _ _ sprites) = do
+	putStrLn $ (show (length sprites)) ++ " sprites"
+	mapM_ renderSprite sprites
+	preservingMatrix $ do
+		translate (Vector3 (-300) (220) (0::GLfloat))
+		renderWithShade (Color3 1 1 (1::GLfloat)) (Color3 0 0 (1::GLfloat)) $ do
+			scale (0.2::GLfloat) 0.2 0.2
+			renderString Helvetica12 clockStr
+	where
+	clockStr = timeInSeconds variables
+
+	renderSprite :: Sprite -> IO ()
+
+	renderSprite Square {position = x:+y, color = c} = preservingMatrix $ do
+		color c
+		cube (0.1::GLfloat)
+
+	renderSprite _ = return ()
+
+
+	renderWithShade :: (ColorComponent a) => Color3 a -> Color3 a -> IO () -> IO ()
+	renderWithShade colorA colorB renderer = do
+		color colorB
+		preservingMatrix $ do
+			translate $ Vector3 1 (-1) (-1::GLfloat)
+			renderer
+		color colorA
+		preservingMatrix renderer

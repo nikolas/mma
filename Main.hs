@@ -6,15 +6,26 @@ import State
 import Points
 
 main = do
-	(progname,_) <- getArgsAndInitialize
-	initialDisplayMode $= [DoubleBuffered]
+	(progname,args) <- getArgsAndInitialize
 
-	createWindow "mma"
-	reshapeCallback $= Just reshape
+	keystate <- newIORef []
 
-	startState <- guiInit
+	cp <- newIORef (openingProc 0
 
-	globalState <- newIORef startState
+	initialWindowSize $= Size 640 480
+	initialDisplayMode $= [RGBAMode,DoubleBuffered]
+
+	wnd <- createWindow "Marlon Moonglow's Animator"
+
+	displayCallback $= dispProc cp
+	keyboardMouseCallback $= Just (keyProc keystate)
+
+	initMatrix
+	mainLoop
+
+	--reshapeCallback $= Just reshape
+	--startState <- guiInit
+	{-globalState <- newIORef startState
 	angle <- newIORef (0.0::GLfloat)
 	delta <- newIORef (0.1::GLfloat)
 	position <- newIORef (0.0::GLfloat, 0.0)
@@ -26,7 +37,24 @@ main = do
 
 	idleCallback $= Just (idle angle delta)
 	displayCallback $= (display angle position)
-	mainLoop
+	mainLoop-}
+
+keyProc keystate key ks mod pos =
+	case (key,ks) of
+		(Char 'q',_) -> exitSuccess
+		(Char '\ESC',_) -> exitSuccess
+
+initMatrix = do
+	viewport $= (Position 0 0, Size 640 480)
+	matrixMode $= Projection
+	loadIdentity
+	perspective 30.0 (4/3) 600 1400
+	lookAt (Vertex3 0 0 (927::GLfloat)) (Vertex3 0 0 (0::GLfloat)) (Vector3 0 1 (0::GLfloat))
+
+dispProc cp = do
+	m <- get cp
+	Scene next <- m
+	cp $= next
 
 guiInit :: IO (GlobalState)
 guiInit = do
