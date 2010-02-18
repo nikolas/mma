@@ -1,25 +1,33 @@
 module State (
-	State(State),
-	KeysState(KeysState),
-	MousePos(MousePos)
+	State(..),
+	Variables(..),
+--	KeysState(KeysState),
+--	MousePos(MousePos),
+	elapsedTimeInSeconds,
+	Sprite(..)
 ) where
-import Data.IORef
+--import Data.IORef
 import Data.Complex
 import Graphics.Rendering.OpenGL
+import Graphics.UI.GLUT
 
 data State = State
 	{
 		--keysState :: IORef KeysState,
 		--mousePos :: IORef MousePos,
-		variable :: Variables
-		sprites :: [Sprite]
+		variable :: Variables,
+		sprites :: [Sprite],
+		keys :: [[Key]]
 	}
 
 data Variables = Variables {
 	clock :: Int
 }
 
-data KeysState = KeysState
+elapsedTimeInSeconds :: Variables -> Int
+elapsedTimeInSeconds (Variables i) = i
+
+{-data KeysState = KeysState
 	{
 		leftKeyDown     :: Bool,
 		rightKeyDown    :: Bool,
@@ -34,11 +42,11 @@ data MousePos = MousePos
 	{
 		mouseX  :: Int,
 		mouseY  :: Int
-	}
+	}-}
 
 -- for now
 data Sprite =
 	Square {
-		position :: Complex GLfloat,
-		color :: Color3 GLfloat
+		spritePos :: Complex GLfloat,
+		spriteColor :: Color3 GLfloat
 	}

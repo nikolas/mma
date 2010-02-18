@@ -1,5 +1,5 @@
 module Display (
-	display,idle
+	renderState
 ) where
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
@@ -8,7 +8,7 @@ import Cube
 import Points
 import State
 
-display angle position = do 
+{-display angle position = do
 	clear [ColorBuffer]
 	loadIdentity
 	(x,y) <- get position
@@ -23,7 +23,7 @@ display angle position = do
 			translate $ Vector3 x y z
 			cube (0.1::GLfloat)
 			) $ points 50
-	swapBuffers
+	swapBuffers-}
 
 idle angle delta = do
 	a <- get angle
@@ -40,7 +40,7 @@ idle angle delta = do
 	} deriving Show-}
 
 renderState :: State -> IO ()
-renderState (State _ _ sprites) = do
+renderState (State variables sprites _) = do
 	putStrLn $ (show (length sprites)) ++ " sprites"
 	mapM_ renderSprite sprites
 	preservingMatrix $ do
@@ -49,11 +49,11 @@ renderState (State _ _ sprites) = do
 			scale (0.2::GLfloat) 0.2 0.2
 			renderString Helvetica12 clockStr
 	where
-	clockStr = timeInSeconds variables
+	clockStr = show $ elapsedTimeInSeconds variables
 
 	renderSprite :: Sprite -> IO ()
 
-	renderSprite Square {position = x:+y, color = c} = preservingMatrix $ do
+	renderSprite (Square p c) = preservingMatrix $ do
 		color c
 		cube (0.1::GLfloat)
 

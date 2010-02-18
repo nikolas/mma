@@ -1,13 +1,11 @@
 module Bindings (
-	idle,
-	display,
 	reshape,
 	keyboardMouse,
 	mouseAct
 ) where
+import Data.IORef
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
-import Data.IORef
 import System.Exit
 import Display
 
