@@ -1,4 +1,3 @@
---import Complex
 import Data.IORef
 import qualified Graphics.UI.GLUT as GL
 import System.Exit

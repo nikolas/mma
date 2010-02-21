@@ -1,5 +1,8 @@
 {-# OPTIONS -fglasgow-exts #-}
 
+{- metavar's dsl. do it this way until i know what can be removed
+ -}
+
 module MetaGL (
 	render,
 	world
@@ -11,8 +14,6 @@ import qualified Graphics.UI.GLUT as GL
 
 import State
 
-{- metavar's dsl. do it this way until i know what can be removed
- -}
 class GLCommand a where
 	render :: a -> IO ()
 
@@ -70,25 +71,34 @@ renderActions (RenderQuads commands) = GL.renderPrimitive GL.Quads $ mapM_ rende
 renderActions (RenderSerial commands) = mapM_ render commands
 renderActions (RenderParallel commands) = mapM_ (GL.preservingMatrix . render) commands
 
-world (Env t s) = serial [ identity,
+world (Env t ss) = serial $ concat $ map renderSprite ss
+	where
+	renderSprite :: Sprite -> [GLC]
+	renderSprite s = let pos = head (spritePath s) in [
+		identity,
+		translate (0 - realPart pos) 0 (0 - imagPart pos),
+		translate 0 0 (-4),
+		quads [ color 1 0 0,
+			vertex 0 0 0,
+			vertex 1 0 0,
+			vertex 0 1 0,
+			vertex 1 1 0 ]
+		]
 	--rotate (playerRotation s) 0 1 0,
 	--translate (0 - playerX s) 0 (0 - playerY s),
 	--translate 0 0 (-4),
 	--rotate trotation 0 1 0,
-	translate (0 - realPart pos) 0 (0 - imagPart pos),
+	{-translate (0 - realPart pos) 0 (0 - imagPart pos),
 	translate 0 0 (-4),
 	quads [ color 1 0 0,
 		vertex 0 0 0,
 		vertex 1 0 0,
 		vertex 0 1 0,
-		vertex 1 1 0 ]
+		vertex 1 1 0 ]-}
 	{-triangles [ color 1 0 0,
 		vertex 0 1 0,
 		color 0 1 0,
 		vertex (-1) 0 0,
 		color 0 0 1,
 		vertex 1 0 0]-}
-	]
-	where
-	trotation = (fromIntegral t) / 10
-	pos = head (spritePath (head s))
+	--trotation = (fromIntegral t) / 10
