@@ -1,41 +1,25 @@
 module State (
-	State(..),
-	Variables(..),
---	KeysState(KeysState),
---	MousePos(MousePos),
+	Env(..),
+	initialEnvironment,
 	elapsedTimeInSeconds,
 	Sprite(..)
 ) where
---import Data.IORef
-import Data.Complex
-import Graphics.Rendering.OpenGL
-import Graphics.UI.GLUT
+import Complex
+import qualified Graphics.UI.GLUT as GL
 
-data State = State
+data Env = Env
 	{
-		--keysState :: IORef KeysState,
-		--mousePos :: IORef MousePos,
-		variables :: Variables,
+		clock :: Int,
 		sprites :: [Sprite]
-	}
+	} deriving (Show)
 
-data Variables = Variables {
-	clock :: Int
-}
+initialEnvironment = Env 0 [Square (replicate 10 ((1.0::GL.GLdouble):+(1.0::GL.GLdouble)))]
 
-elapsedTimeInSeconds :: Variables -> Int
-elapsedTimeInSeconds (Variables i) = i
+elapsedTimeInSeconds :: Env -> Int
+elapsedTimeInSeconds (Env i _) = i
 
 data Sprite =
 	Square {
-		spritePos :: Complex GLfloat,
-		spriteColor :: Color3 GLfloat
-	}
-
-updateState :: [Key] -> State -> State
-updateState keys (State variable sprites) = State newVars newSprites
-	where
-	-- add a sprite to the screen
-	if addSpriteButton `elem` keys then 
-
-addSpriteButton = Char 'z'
+		spritePath :: [Complex GL.GLdouble]
+--		spriteColor :: Color3 GLdouble
+	} deriving (Show)

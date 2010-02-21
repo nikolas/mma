@@ -1,5 +1,4 @@
 module Display (
-	renderState
 ) where
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
@@ -39,7 +38,7 @@ idle angle delta = do
 		rectHeight :: Double
 	} deriving Show-}
 
-renderState :: State -> IO ()
+{-renderState :: State -> IO ()
 renderState (State variables sprites _) = do
 	putStrLn $ (show (length sprites)) ++ " sprites"
 	mapM_ renderSprite sprites
@@ -67,4 +66,4 @@ renderState (State variables sprites _) = do
 			translate $ Vector3 1 (-1) (-1::GLfloat)
 			renderer
 		color colorA
-		preservingMatrix renderer
+		preservingMatrix renderer-}
