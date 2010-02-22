@@ -50,6 +50,7 @@ initGL = do
 	window <- GL.createWindow "mma"
 	GL.clearColor $= GL.Color4 0 0 0 0
 
+	-- make sure the viewport's correct when initialWindowSize is ignored
 	sz <- GL.get GL.screenSize
 	GL.viewport $= (GL.Position 0 0 , sz)
 

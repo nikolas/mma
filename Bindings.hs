@@ -10,11 +10,11 @@ import System.Exit
 import State
 
 --__----__----__
--- callbacks
+-- input callbacks
 --__----__----__----_
 keyboardMouse window _ (GL.Char '\ESC') GL.Down _ _ = do
 	GL.destroyWindow window
-	exitSuccess
+	exitWith ExitSuccess
 keyboardMouse _ env key state modifiers position = do
 	e <- GL.get env
 	env $= userAction e key state
@@ -40,7 +40,6 @@ userAction (Env v sprites)
 -- drag the camera
 userAction (Env v sprites)
 	(GL.MouseButton GL.RightButton) _ = Env v $ map toggleSticky sprites
-
 
 userAction e _ _ = e
 
