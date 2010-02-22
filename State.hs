@@ -1,10 +1,8 @@
 module State (
 	Env(..),
 	initialEnvironment,
-	elapsedTimeInSeconds,
 	Sprite(..)
 ) where
-import Complex
 import qualified Graphics.UI.GLUT as GL
 
 data Env = Env
@@ -13,13 +11,14 @@ data Env = Env
 		sprites :: [Sprite]
 	} deriving (Show)
 
-initialEnvironment = Env 0 [Square (replicate 10 ((1.0::GL.GLdouble):+(1.0::GL.GLdouble)))]
-
-elapsedTimeInSeconds :: Env -> Int
-elapsedTimeInSeconds (Env i _) = i
+initialEnvironment = Env 0 [
+	Square (GL.Position 1 1) [] False
+	]
 
 data Sprite =
 	Square {
-		spritePath :: [Complex GL.GLdouble]
+		currentPos :: GL.Position,
+		spritePath :: [GL.Position],
+		sticky :: Bool
 --		spriteColor :: Color3 GLdouble
 	} deriving (Show)

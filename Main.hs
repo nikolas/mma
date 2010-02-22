@@ -4,6 +4,7 @@ import System.Exit
 
 import Bindings
 import MetaGL
+import Render
 import State
 
 main = do
@@ -18,6 +19,8 @@ main = do
 	GL.displayCallback $= (display env)
 	GL.idleCallback $= Just (idle env)
 	GL.keyboardMouseCallback $= Just (keyboardMouse wnd env)
+	GL.motionCallback $= Just (motion env)
+	GL.passiveMotionCallback $= Just (passiveMotion env)
 
 	GL.mainLoop
 
