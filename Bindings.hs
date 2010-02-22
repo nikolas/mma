@@ -28,20 +28,30 @@ passiveMotion env pos = do
 
 
 -- add a sprite
-userAction (Env t sprites) (GL.Char 'a') GL.Down = Env t s
+userAction (Env v sprites) (GL.Char 'a') GL.Down = Env v s
 	where
 	s = (Square (GL.Position newPos newPos) [] False):sprites
-	newPos = (fromIntegral $ length sprites + 10) :: GL.GLint
+	newPos = (fromIntegral $ length sprites * 2) :: GL.GLint
+
+-- drag a sprite
+userAction (Env v sprites)
+	(GL.MouseButton GL.LeftButton) _ = Env v $ map toggleSticky sprites
+
+-- drag the camera
+userAction (Env v sprites)
+	(GL.MouseButton GL.RightButton) _ = Env v $ map toggleSticky sprites
+
 
 userAction e _ _ = e
 
-mouseMotion (Env t s) pos = Env t $ map updateSprite s
+mouseMotion (Env v s) newpos = Env v $ map updateSprite s
 	where
-	updateSprite q = if sticky q
-			then (Square pos [] True)
-			else q
+	updateSprite q =
+		if sticky q
+		then Square (newpos  [] True)
+		else q
 
-passiveMouseMotion (Env t s) pos = Env t s
+passiveMouseMotion (Env v s) pos = Env v s
 
 
 -- TODO :P

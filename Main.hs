@@ -3,7 +3,7 @@ import qualified Graphics.UI.GLUT as GL
 import System.Exit
 
 import Bindings
-import MetaGL
+import MetaGL (render)
 import Render
 import State
 
@@ -38,19 +38,21 @@ idle env = do
 	GL.postRedisplay Nothing
 
 tick :: Int -> Env -> Env
-tick tnew (Env 0 sprites) = Env tnew sprites
-tick tnew (Env told sprites) = Env tnew s
+tick tnew (Env v sprites) = Env (setClock (clock v+elapsed) v) s
 	where
-	s = map updateSprites sprites
-	elapsed = fromIntegral $ tnew - told
-	updateSprites z = z
+	s = map idleSprite sprites
+	elapsed = fromIntegral $ tnew - clock v
+	idleSprite z = z
 
 initGL = do
 	GL.initialDisplayMode $= [GL.DoubleBuffered]
 	GL.initialWindowSize $= GL.Size 640 480
 	window <- GL.createWindow "mma"
 	GL.clearColor $= GL.Color4 0 0 0 0
-	GL.viewport $= (GL.Position 0 0 , GL.Size 640 680)
+
+	sz <- GL.get GL.screenSize
+	GL.viewport $= (GL.Position 0 0 , sz)
+
 	GL.matrixMode $= GL.Projection
 	GL.loadIdentity
 	GL.perspective 45 ((fromIntegral 640)/(fromIntegral 480)) 0.1 100
