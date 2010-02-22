@@ -48,7 +48,7 @@ mouseMotion (Env v s) newpos = Env v $ map updateSprite s
 	where
 	updateSprite q =
 		if sticky q
-		then Square (newpos  [] True)
+		then (Square newpos [] True)
 		else q
 
 passiveMouseMotion (Env v s) pos = Env v s

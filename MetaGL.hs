@@ -18,8 +18,6 @@ module MetaGL (
 	render
 ) where
 
-import Complex
-import Data.IORef
 import qualified Graphics.UI.GLUT as GL
 
 import State

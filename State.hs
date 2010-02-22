@@ -6,7 +6,7 @@ module State (
 	setClock,
 
 	Sprite(..),
-	toggleSticky
+	toggleSticky,
 ) where
 import qualified Graphics.UI.GLUT as GL
 
