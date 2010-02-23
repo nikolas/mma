@@ -18,14 +18,19 @@ main = do
 	-- callbacks
 	GL.displayCallback $= (display env)
 	GL.idleCallback $= Just (idle env)
-	GL.reshapeCallback $= Just reshape
 	GL.keyboardMouseCallback $= Just (keyboardMouse wnd env)
 	GL.motionCallback $= Just (motion env)
 	GL.passiveMotionCallback $= Just (passiveMotion env)
 
+	-- just distort it on reshaping, to make sure it's at least still all on
+	-- the screen
+	--GL.reshapeCallback $= Just reshape
+
 	GL.mainLoop
 
-
+--__----__----__
+-- display callbacks
+--__----__----__----_
 display env = do
 	GL.clear [GL.ColorBuffer, GL.DepthBuffer]
 	e <- GL.get env
@@ -38,13 +43,6 @@ idle env = do
 	env $= tick time e
 	GL.postRedisplay Nothing
 
-tick :: Int -> Env -> Env
-tick tnew (Env v sprites) = Env (setClock (clock v+elapsed) v) s
-	where
-	s = map idleSprite sprites
-	elapsed = fromIntegral $ tnew - clock v
-	idleSprite z = z
-
 reshape s@(GL.Size x y) = do
 	GL.viewport $= (GL.Position 0 0 , s)
 
@@ -52,6 +50,15 @@ reshape s@(GL.Size x y) = do
 	GL.loadIdentity
 	GL.perspective 45 ((fromIntegral x)/(fromIntegral y)) 0.1 100
 	GL.matrixMode $= GL.Modelview 0
+--__----__----__----__----__----__----__----__----__----__----__----__--
+
+
+tick :: Int -> Env -> Env
+tick tnew (Env v sprites) = Env (setClock (clock v+elapsed) v) s
+	where
+	s = map idleSprite sprites
+	elapsed = fromIntegral $ tnew - clock v
+	idleSprite z = z
 
 initGL = do
 	GL.initialDisplayMode $= [GL.DoubleBuffered]

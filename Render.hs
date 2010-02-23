@@ -12,8 +12,7 @@ world (Env v s) = serial $ concat $ renderMenu v : map renderSprite s
 renderSprite :: Sprite -> [GLC]
 renderSprite s = [
 	identity,
-	translate (0 - x) 0 (0 - y),
-	translate 0 0 (-4),
+	translate x y dist,
 	quads [ color 1 0 0,
 		vertex 0 1,
 		vertex 0 0,
@@ -26,33 +25,24 @@ renderSprite s = [
 	(GL.Position p q) = currentPos s
 
 -- TODO: make some images to put in these quads
--- TODO: learn how to use quads
 renderMenu :: Vars -> [GLC]
-renderMenu v = [
-	identity,
-	translate (0 - 0) 0 (0 - 40),
-	translate 0 0 (-4),
-	quads [ color 1 0 1,
-		vertex 0 1,
-		vertex 0 0,
-		vertex 1 0,
-		vertex 1 1 ],
-	identity,
-	translate (0 - 40) 0 (0 - 40),
-	translate 0 0 (-4),
-	quads [ color 1 0 1,
-		vertex 0 1,
-		vertex 0 0,
-		vertex 1 0,
-		vertex 1 1 ],
-	identity,
-	translate (0 - 80) 0 (0 - 40),
-	translate 0 0 (-4),
-	quads [ color 1 0 1,
-		vertex 0 1,
-		vertex 0 0,
-		vertex 1 0,
-		vertex 1 1 ]
-	]
+renderMenu v = concat $ map renderButton [0 .. 5]
 	where
 	m = menu v
+
+renderButton :: Int -> [GLC]
+renderButton i = [
+	identity,
+	translate (x!!i) (-20) dist,
+	quads [ color 0.8 0 0.5,
+		vertex 0 5,
+		vertex 0 0,
+		vertex 9 0,
+		vertex 9 5 ]
+	]
+	where
+	x = [-30,-20 ..]
+
+
+-- distance from camera
+dist = (-50)
