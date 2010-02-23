@@ -7,7 +7,7 @@ import MetaGL
 import State
 
 
-world (Env v sprites) = parallel $ concat $ (renderMenu v : map renderSprite sprites)
+world (Env v sprites) = serial $ concat $ (renderMenu v : map renderSprite sprites)
 
 renderSprite :: Sprite -> [GLC]
 renderSprite s = [
@@ -15,10 +15,10 @@ renderSprite s = [
 	translate (0 - x) 0 (0 - y),
 	translate 0 0 (-4),
 	quads [ color 1 0 0,
-		vertex 0 0 0,
-		vertex 1 0 0,
-		vertex 0 1 0,
-		vertex 1 1 0 ]
+		vertex 0 1,
+		vertex 0 0,
+		vertex 1 0,
+		vertex 1 1 ]
 	]
 	where
 	x = fromIntegral p :: GL.GLdouble
@@ -30,29 +30,29 @@ renderSprite s = [
 renderMenu :: Vars -> [GLC]
 renderMenu v = [
 	identity,
-	translate (0 - 0) 0 (0 - 440),
+	translate (0 - 0) 0 (0 - 40),
 	translate 0 0 (-4),
 	quads [ color 1 0 1,
-		vertex 0 0 0,
-		vertex 1 0 0,
-		vertex 0 1 0,
-		vertex 1 1 0 ],
+		vertex 0 1,
+		vertex 0 0,
+		vertex 1 0,
+		vertex 1 1 ],
 	identity,
-	translate (0 - 40) 0 (0 - 440),
+	translate (0 - 40) 0 (0 - 40),
 	translate 0 0 (-4),
 	quads [ color 1 0 1,
-		vertex 0 0 0,
-		vertex 1 0 0,
-		vertex 0 1 0,
-		vertex 1 1 0 ],
+		vertex 0 1,
+		vertex 0 0,
+		vertex 1 0,
+		vertex 1 1 ],
 	identity,
-	translate (0 - 80) 0 (0 - 440),
+	translate (0 - 80) 0 (0 - 40),
 	translate 0 0 (-4),
 	quads [ color 1 0 1,
-		vertex 0 0 0,
-		vertex 1 0 0,
-		vertex 0 1 0,
-		vertex 1 1 0 ]
+		vertex 0 1,
+		vertex 0 0,
+		vertex 1 0,
+		vertex 1 1 ]
 	]
 	where
 	m = menu v

@@ -49,12 +49,12 @@ matrixActions (ActionScale x y z) = GL.scale x y z
 matrixActions (ActionTranslate vec) = GL.translate vec
 matrixActions (ActionIdentity) = GL.loadIdentity
 
-data GL.VertexComponent a => VertexActions a = ActionVertex (GL.Vertex3 a)
+data GL.VertexComponent a => VertexActions a = ActionVertex (GL.Vertex2 a)
 instance GL.VertexComponent a => GLCommand (VertexActions a) where
 	render = vertexActions
 vertexActions (ActionVertex vec) = GL.vertex vec
-vertex :: GL.GLdouble -> GL.GLdouble -> GL.GLdouble -> GLC
-vertex x y z = GLC $ ActionVertex (GL.Vertex3 x y z)
+vertex :: GL.GLdouble -> GL.GLdouble -> GLC
+vertex x y = GLC $ ActionVertex (GL.Vertex2 x y)
 
 data GL.ColorComponent a => ColorActions a = ActionColor (GL.Color3 a)
 instance GL.ColorComponent a => GLCommand (ColorActions a) where

@@ -18,7 +18,7 @@ data Env = Env
 
 initialEnvironment = Env
 	( Vars 0 (GL.Position 0 0) False False initialMenu )
-	[ Square (GL.Position 1 1) [] False ]
+	[ Square (GL.Position 0 0) [] False ]
 
 data Vars = Vars
 	{
