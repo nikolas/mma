@@ -7,7 +7,7 @@ import MetaGL
 import State
 
 
-world (Env v sprites) = serial $ concat $ (renderMenu v : map renderSprite sprites)
+world (Env v s) = serial $ concat $ renderMenu v : map renderSprite s
 
 renderSprite :: Sprite -> [GLC]
 renderSprite s = [

@@ -35,22 +35,21 @@ userAction (Env v sprites) (GL.Char 'a') GL.Down = Env v s
 
 -- drag a sprite
 userAction (Env v sprites)
-	(GL.MouseButton GL.LeftButton) _ = Env v $ map toggleSticky sprites
-
--- drag the camera
-userAction (Env v sprites)
-	(GL.MouseButton GL.RightButton) _ = Env v $ map toggleSticky sprites
+	(GL.MouseButton GL.LeftButton) _ = Env v $
+		map toggleSticky (filter (isMouseOverSprite v) sprites)
+		++ filter (not . isMouseOverSprite v) sprites
 
 userAction e _ _ = e
 
-mouseMotion (Env v s) newpos = Env v $ map updateSprite s
+mouseMotion (Env v s) pos = Env (setMousePos pos v)
+	$ map updateSprite s
 	where
 	updateSprite q =
 		if sticky q
-		then (Square newpos [] True)
+		then setSpritePos pos q
 		else q
 
-passiveMouseMotion (Env v s) pos = Env v s
+passiveMouseMotion (Env v s) pos = Env (setMousePos pos v) s
 
 
 -- TODO :P
