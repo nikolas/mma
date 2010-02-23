@@ -18,6 +18,7 @@ main = do
 	-- callbacks
 	GL.displayCallback $= (display env)
 	GL.idleCallback $= Just (idle env)
+	GL.reshapeCallback $= Just reshape
 	GL.keyboardMouseCallback $= Just (keyboardMouse wnd env)
 	GL.motionCallback $= Just (motion env)
 	GL.passiveMotionCallback $= Just (passiveMotion env)
@@ -44,20 +45,25 @@ tick tnew (Env v sprites) = Env (setClock (clock v+elapsed) v) s
 	elapsed = fromIntegral $ tnew - clock v
 	idleSprite z = z
 
+reshape s@(GL.Size x y) = do
+	GL.viewport $= (GL.Position 0 0 , s)
+
+	GL.matrixMode $= GL.Projection
+	GL.loadIdentity
+	GL.perspective 45 ((fromIntegral x)/(fromIntegral y)) 0.1 100
+	GL.matrixMode $= GL.Modelview 0
+
 initGL = do
 	GL.initialDisplayMode $= [GL.DoubleBuffered]
 	GL.initialWindowSize $= GL.Size 640 480
 	window <- GL.createWindow "mma"
 	GL.clearColor $= GL.Color4 0 0 0 0
 
-	-- make sure the viewport's correct when initialWindowSize is ignored
-	sz <- GL.get GL.screenSize
-	GL.viewport $= (GL.Position 0 0 , sz)
+	-- make sure the viewport and perspective are correct when
+	-- initialWindowSize is ignored
+	s <- GL.get GL.screenSize
+	reshape s
 
-	GL.matrixMode $= GL.Projection
-	GL.loadIdentity
-	GL.perspective 45 ((fromIntegral 640)/(fromIntegral 480)) 0.1 100
-	GL.matrixMode $= GL.Modelview 0
 	return window
 
 ($=) :: (GL.HasSetter s) => s a -> a -> IO ()
