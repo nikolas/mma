@@ -1,6 +1,5 @@
 import Data.IORef
 import qualified Graphics.UI.GLUT as GL
-import System.Exit
 
 import Bindings
 import MetaGL (render)
@@ -9,7 +8,7 @@ import State
 
 main = do
 	-- make the GL window
-	(progname,args) <- GL.getArgsAndInitialize
+	(_,_) <- GL.getArgsAndInitialize
 	wnd <- initGL
 
 	-- pointer to the program state
@@ -54,9 +53,9 @@ reshape s@(GL.Size x y) = do
 
 
 tick :: Int -> Env -> Env
-tick tnew (Env v sprites) = Env (setClock (clock v+elapsed) v) s
+tick tnew (Env v sprs) = Env (setClock (clock v+elapsed) v) s
 	where
-	s = map idleSprite sprites
+	s = map idleSprite sprs
 	elapsed = fromIntegral $ tnew - clock v
 	idleSprite z = z
 
@@ -72,6 +71,7 @@ initGL = do
 	reshape s
 
 	return window
+
 
 ($=) :: (GL.HasSetter s) => s a -> a -> IO ()
 ($=) = (GL.$=)

@@ -1,5 +1,6 @@
 module Render (
-	world
+	world,
+	renderSprite,
 ) where
 import qualified Graphics.UI.GLUT as GL
 

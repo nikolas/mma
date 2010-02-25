@@ -17,23 +17,33 @@ keyboardMouse window _ (GL.Char '\ESC') GL.Down _ _ = do
 	exitWith ExitSuccess
 keyboardMouse _ env key state modifiers position = do
 	e <- GL.get env
+	print $ clock $ vars $ e
 	env $= userAction e key state
 motion env pos = do
 	e <- GL.get env
+	--pos $= oglToGlut pos
+	print $ sprites e
 	env $= mouseMotion e pos
 passiveMotion env pos = do
 	e <- GL.get env
+	--pos $= oglToGlut pos
 	env $= passiveMouseMotion e pos
 --__----__----__----__----__----__----__----__----__----__----__----__--
 
+-- OpenGL and GLUT don't use the same co-ordinates, lol
+--oglToGlut :: GL.Position -> GL.Position
+--oglToGlut (GL.Position x y) = GL.Position (x - (640/2)) (y - (480-2))
 
 -- add a sprite
 userAction (Env v sprites) (GL.Char 'a') GL.Down = Env v s
 	where
-	s = (Square (GL.Position newPos newPos) [] False):sprites
-	newPos = (fromIntegral $ length sprites * 2) :: GL.GLint
+	s = (Square (GL.Position x y) [] False):sprites
+	-- get random new position from clock
+	-- yeah...... doesn't really work :P
+	x = fromIntegral $ clock v `mod` 20 :: GL.GLint
+	y = fromIntegral $ (clock v + 8) `mod` 20 :: GL.GLint
 
--- drag a sprite
+-- start dragging a sprite
 userAction (Env v sprites)
 	(GL.MouseButton GL.LeftButton) _ = Env v $
 		map toggleSticky (filter (isMouseOverSprite v) sprites)
@@ -44,6 +54,7 @@ userAction e _ _ = e
 mouseMotion (Env v s) pos = Env (setMousePos pos v)
 	$ map updateSprite s
 	where
+	-- drag a sprite
 	updateSprite q =
 		if sticky q
 		then setSpritePos pos q

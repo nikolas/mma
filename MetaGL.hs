@@ -20,8 +20,6 @@ module MetaGL (
 
 import qualified Graphics.UI.GLUT as GL
 
-import State
-
 class GLCommand a where
 	render :: a -> IO ()
 
