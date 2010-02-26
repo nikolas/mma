@@ -8,6 +8,7 @@ import MetaGL
 import State
 
 
+world :: Env -> GLC
 world (Env v s) = serial $ concat $ renderMenu v : map renderSprite s
 
 renderSprite :: Sprite -> [GLC]
@@ -27,9 +28,7 @@ renderSprite s = [
 
 -- TODO: make some images to put in these quads
 renderMenu :: Vars -> [GLC]
-renderMenu v = concat $ map renderButton [0 .. 5]
-	where
-	m = menu v
+renderMenu _ = concat $ map renderButton [0 .. 5]
 
 renderButton :: Int -> [GLC]
 renderButton i = [
@@ -46,4 +45,5 @@ renderButton i = [
 
 
 -- distance from camera
+dist :: GL.GLdouble
 dist = (-50)

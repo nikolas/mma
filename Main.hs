@@ -1,54 +1,73 @@
+import Control.Monad
 import Data.IORef
-import qualified Graphics.UI.GLUT as GL
+import Graphics.UI.GLUT
 
 import Bindings
 import MetaGL (render)
 import Render
 import State
 
+main :: IO ()
 main = do
-	-- make the GL window
-	(_,_) <- GL.getArgsAndInitialize
-	wnd <- initGL
-
-	-- pointer to the program state
 	env <- newIORef initialEnvironment
 
+	-- make the GL window
+	(_,_) <- getArgsAndInitialize
+	_ <- initGL
+
 	-- callbacks
-	GL.displayCallback $= (display env)
-	GL.idleCallback $= Just (idle env)
-	GL.keyboardMouseCallback $= Just (keyboardMouse wnd env)
-	GL.motionCallback $= Just (motion env)
-	GL.passiveMotionCallback $= Just (passiveMotion env)
+	displayCallback $= (display env)
+
+	idleCallback $= Just (idle env)
+
+	let
+		moveCursor p = do
+			(Env v sp) <- readIORef env
+			writeIORef env $ Env v{mousePos = p} sp
+
+	keyboardMouseCallback $= Just (\k st _ pos ->
+		do
+			--translate pos >>= moveCursor
+			moveCursor pos
+			when (st == Down) $
+				modifyIORef env $ processEnv k
+			postRedisplay Nothing)
+
+	motionCallback $= Just (motion env)
+
+	passiveMotionCallback $= Just (passiveMotion env)
 
 	-- just distort it on reshaping, to make sure it's at least still all on
 	-- the screen
-	--GL.reshapeCallback $= Just reshape
+	--reshapeCallback $= Just reshape
 
-	GL.mainLoop
+	mainLoop
 
 --__----__----__
 -- display callbacks
 --__----__----__----_
+display :: IORef Env -> IO ()
 display env = do
-	GL.clear [GL.ColorBuffer, GL.DepthBuffer]
-	e <- GL.get env
+	clear [ColorBuffer, DepthBuffer]
+	e <- get env
 	render $ world e
-	GL.swapBuffers
+	swapBuffers
 
+idle :: IORef Env -> IO ()
 idle env = do
-	e <- GL.get env
-	time <- GL.get GL.elapsedTime
+	e <- get env
+	time <- get elapsedTime
 	env $= tick time e
-	GL.postRedisplay Nothing
+	postRedisplay Nothing
 
-reshape s@(GL.Size x y) = do
-	GL.viewport $= (GL.Position 0 0 , s)
+reshape :: Size -> IO ()
+reshape s@(Size x y) = do
+	viewport $= (Position 0 0 , s)
 
-	GL.matrixMode $= GL.Projection
-	GL.loadIdentity
-	GL.perspective 45 ((fromIntegral x)/(fromIntegral y)) 0.1 100
-	GL.matrixMode $= GL.Modelview 0
+	matrixMode $= Projection
+	loadIdentity
+	perspective 45 ((fromIntegral x)/(fromIntegral y)) 0.1 100
+	matrixMode $= Modelview 0
 --__----__----__----__----__----__----__----__----__----__----__----__--
 
 
@@ -59,19 +78,16 @@ tick tnew (Env v sprs) = Env v{clock = clock v+elapsed} s
 	elapsed = fromIntegral $ tnew - clock v
 	idleSprite z = z
 
+initGL :: IO Window
 initGL = do
-	GL.initialDisplayMode $= [GL.DoubleBuffered]
-	GL.initialWindowSize $= GL.Size 640 480
-	window <- GL.createWindow "mma"
-	GL.clearColor $= GL.Color4 0 0 0 0
+	initialDisplayMode $= [DoubleBuffered]
+	initialWindowSize $= Size 640 480
+	window <- createWindow "mma"
+	clearColor $= Color4 0 0 0 0
 
 	-- make sure the viewport and perspective are correct when
 	-- initialWindowSize is ignored
-	s <- GL.get GL.screenSize
+	s <- get screenSize
 	reshape s
 
 	return window
-
-
-($=) :: (GL.HasSetter s) => s a -> a -> IO ()
-($=) = (GL.$=)

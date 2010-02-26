@@ -19,6 +19,7 @@ module MetaGL (
 ) where
 
 import qualified Graphics.UI.GLUT as GL
+--import qualified Graphics.Rendering.OpenGL as OGL
 
 class GLCommand a where
 	render :: a -> IO ()
@@ -33,6 +34,7 @@ scale :: GL.GLdouble -> GL.GLdouble -> GL.GLdouble -> GLC
 scale x y z = GLC $ ActionScale x y z
 translate :: GL.GLdouble -> GL.GLdouble -> GL.GLdouble -> GLC
 translate x y z = GLC $ ActionTranslate (GL.Vector3 x y z)
+identity :: GLC
 identity = GLC $ (ActionIdentity :: MatrixActions GL.GLdouble)
 
 data GL.MatrixComponent a => MatrixActions a =
@@ -62,6 +64,7 @@ colorActions (ActionColor c) = GL.color c
 color :: GL.GLdouble -> GL.GLdouble -> GL.GLdouble -> GLC
 color r g b = GLC $ ActionColor (GL.Color3 r g b)
 
+triangles, quads, serial, parallel :: [GLC] -> GLC
 triangles commands = GLC $ RenderTriangles commands
 quads commands = GLC $ RenderQuads commands
 serial commands = GLC $ RenderSerial commands
@@ -72,9 +75,15 @@ data RenderActions =
 	| RenderQuads [GLC]
 	| RenderSerial [GLC]
 	| RenderParallel [GLC]
+--	| RenderRenderMode [GLC]
+--	| RenderSelectMode [GLC]
 instance GLCommand RenderActions where
 	render = renderActions
+
+renderActions :: RenderActions -> IO ()
 renderActions (RenderTriangles commands) = GL.renderPrimitive GL.Triangles $ mapM_ render commands
 renderActions (RenderQuads commands) = GL.renderPrimitive GL.Quads $ mapM_ render commands
 renderActions (RenderSerial commands) = mapM_ render commands
 renderActions (RenderParallel commands) = mapM_ (GL.preservingMatrix . render) commands
+--renderActions (RenderRenderMode commands) = GL.renderMode $ mapM_ render commands
+--renderActions (RenderSelectMode commands) =

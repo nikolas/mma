@@ -16,6 +16,7 @@ data Env = Env
 		sprites :: [Sprite]
 	} deriving (Show)
 
+initialEnvironment :: Env
 initialEnvironment = Env
 	( Vars 0 (GL.Position 0 0) False False initialMenu )
 	[ Square (GL.Position 0 0) [] False ]
@@ -44,6 +45,7 @@ data Menu = Menu
 	} deriving (Show)
 
 type Button = Bool
+initialMenu :: Menu
 initialMenu = Menu {
 	playButton = False,
 	recButton = False,
