@@ -15,7 +15,7 @@ module MetaGL (
 	parallel,
 	vertex,
 	color,
-	render
+	render,
 ) where
 
 import qualified Graphics.UI.GLUT as GL
@@ -35,7 +35,8 @@ translate :: GL.GLdouble -> GL.GLdouble -> GL.GLdouble -> GLC
 translate x y z = GLC $ ActionTranslate (GL.Vector3 x y z)
 identity = GLC $ (ActionIdentity :: MatrixActions GL.GLdouble)
 
-data GL.MatrixComponent a => MatrixActions a = ActionRotate a (GL.Vector3 a)
+data GL.MatrixComponent a => MatrixActions a =
+	ActionRotate a (GL.Vector3 a)
 	| ActionScale a a a
 	| ActionTranslate (GL.Vector3 a)
 	| ActionIdentity
@@ -66,7 +67,8 @@ quads commands = GLC $ RenderQuads commands
 serial commands = GLC $ RenderSerial commands
 parallel commands = GLC $ RenderParallel commands
 
-data RenderActions = RenderTriangles [GLC]
+data RenderActions =
+	RenderTriangles [GLC]
 	| RenderQuads [GLC]
 	| RenderSerial [GLC]
 	| RenderParallel [GLC]

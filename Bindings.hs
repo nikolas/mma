@@ -51,16 +51,16 @@ userAction (Env v sprites)
 
 userAction e _ _ = e
 
-mouseMotion (Env v s) pos = Env (setMousePos pos v)
+mouseMotion (Env v s) pos = Env v{mousePos = pos}
 	$ map updateSprite s
 	where
 	-- drag a sprite
 	updateSprite q =
 		if sticky q
-		then setSpritePos pos q
+		then q{ currentPos = pos }
 		else q
 
-passiveMouseMotion (Env v s) pos = Env (setMousePos pos v) s
+passiveMouseMotion (Env v s) pos = Env v{mousePos = pos} s
 
 
 -- TODO :P

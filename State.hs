@@ -3,13 +3,10 @@ module State (
 	initialEnvironment,
 
 	Vars(..),
-	setClock,
-	setMousePos,
 
 	Sprite(..),
 	toggleSticky,
 	isMouseOverSprite,
-	setSpritePos,
 ) where
 import qualified Graphics.UI.GLUT as GL
 
@@ -31,12 +28,6 @@ data Vars = Vars
 		recording :: Bool,
 		menu :: Menu
 	} deriving (Show)
-
-setClock :: Int -> Vars -> Vars
-setClock i (Vars _ mp p r m) = Vars i mp p r m
-
-setMousePos :: GL.Position -> Vars -> Vars
-setMousePos pos (Vars c _ p r m) = Vars c pos p r m
 
 data Menu = Menu
 	{
@@ -83,6 +74,3 @@ isMouseOverSprite v s = (sx >= vx - size) && (sx <= vx + size)
 				(GL.Position sx sy) = currentPos s
 				(GL.Position vx vy) = mousePos v
 				size = 40
-
-setSpritePos :: GL.Position -> Sprite -> Sprite
-setSpritePos p (Square _ sp st) = Square p sp st

@@ -53,7 +53,7 @@ reshape s@(GL.Size x y) = do
 
 
 tick :: Int -> Env -> Env
-tick tnew (Env v sprs) = Env (setClock (clock v+elapsed) v) s
+tick tnew (Env v sprs) = Env v{clock = clock v+elapsed} s
 	where
 	s = map idleSprite sprs
 	elapsed = fromIntegral $ tnew - clock v
