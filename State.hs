@@ -5,8 +5,12 @@ module State (
 	Vars(..),
 
 	Sprite(..),
+	makeSprite,
+	spritePoints,
 	toggleSticky,
 	isMouseOverSprite,
+
+	conv,
 ) where
 import qualified Graphics.UI.GLUT as GL
 
@@ -19,7 +23,7 @@ data Env = Env
 initialEnvironment :: Env
 initialEnvironment = Env
 	( Vars 0 (GL.Position 0 0) False False initialMenu )
-	[ Square (GL.Position 0 0) [] False ]
+	[ ]
 
 data Vars = Vars
 	{
@@ -59,6 +63,8 @@ data Sprite =
 	Square {
 		currentPos :: GL.Position,
 
+		size :: GL.GLdouble,
+
 		-- recorded path
 		spritePath :: [GL.Position],
 
@@ -66,13 +72,34 @@ data Sprite =
 		sticky :: Bool
 	} deriving (Show)
 
-toggleSticky :: Sprite -> Sprite
-toggleSticky (Square pos path s) = Square pos path $ not s
+makeSprite :: GL.Position -> Sprite
+makeSprite pos = Square pos 10 [] False
 
-isMouseOverSprite :: Vars -> Sprite -> Bool
-isMouseOverSprite v s = (sx >= vx - size) && (sx <= vx + size)
-				&& (sy >= vy - size) && (sy <= sy + size)
+spritePoints :: Sprite -> [GL.Vertex2 GL.GLdouble]
+spritePoints s =
+	[(GL.Vertex2 (x-sz) (y+sz))
+	, (GL.Vertex2 (x-sz) (y-sz))
+	, (GL.Vertex2 (x+sz) (y-sz))
+	, (GL.Vertex2 (x+sz) (y+sz))]
+	where
+	-- TODO: better way to do this
+	x = conv px; y = conv py
+	(GL.Position px py) = currentPos s
+	sz :: GL.GLdouble
+	sz = 10
+
+toggleSticky :: Sprite -> Sprite
+toggleSticky (Square pos sz path s) = Square pos sz path $ not s
+
+isMouseOverSprite :: GL.Position -> Sprite -> Bool
+isMouseOverSprite p s = (sx >= px - sz) && (sx <= px + sz)
+				&& (sy >= py - sz) && (sy <= py + sz)
 				where
-				(GL.Position sx sy) = currentPos s
-				(GL.Position vx vy) = mousePos v
-				size = 40
+				sx = conv csx; sy = conv csy; px = conv ppx; py = conv ppy
+				(GL.Position csx csy) = currentPos s
+				(GL.Position ppx ppy) = p
+				sz = size s
+
+-- generalize an Integral
+conv :: (Integral a, Num b) => a -> b
+conv = fromInteger . toInteger

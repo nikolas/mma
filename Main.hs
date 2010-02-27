@@ -3,7 +3,6 @@ import Data.IORef
 import Graphics.UI.GLUT
 
 import Bindings
-import MetaGL (render)
 import Render
 import State
 
@@ -12,46 +11,55 @@ main = do
 	env <- newIORef initialEnvironment
 
 	-- make the GL window
+	initialWindowSize $= Size 640 480
 	(_,_) <- getArgsAndInitialize
-	_ <- initGL
+	initialDisplayMode $= [DoubleBuffered]
+	wnd <- createWindow "mma"
 
 	-- callbacks
-	displayCallback $= (display env)
+	displayCallback $= (glRunAs2D $ do
+		clearColor $= Color4 1 0 1 1
+		clear [ColorBuffer, DepthBuffer]
+		readIORef env >>= drawWorld
+		flush
+		swapBuffers)
 
 	idleCallback $= Just (idle env)
 
 	let
 		moveCursor p = do
 			(Env v sp) <- readIORef env
+			print p
 			writeIORef env $ Env v{mousePos = p} sp
+		trans :: Position -> IO Position
+		trans (Position x y) = do
+			(_, Size _ h) <- get viewport
+			return ( Position x (conv h - y) )
 
-	keyboardMouseCallback $= Just (\k st _ pos ->
-		do
-			--translate pos >>= moveCursor
-			moveCursor pos
-			when (st == Down) $
-				modifyIORef env $ processEnv k
-			postRedisplay Nothing)
+	keyboardMouseCallback $= Just (keyboardMouse wnd env)
 
-	motionCallback $= Just (motion env)
+	motionCallback $= Just (\pos ->
+		trans pos >>= motion env)
 
-	passiveMotionCallback $= Just (passiveMotion env)
-
-	-- just distort it on reshaping, to make sure it's at least still all on
-	-- the screen
-	--reshapeCallback $= Just reshape
+	passiveMotionCallback $= Just (\pos ->
+		trans pos >>= moveCursor >> postRedisplay Nothing)
 
 	mainLoop
 
---__----__----__
--- display callbacks
---__----__----__----_
-display :: IORef Env -> IO ()
-display env = do
-	clear [ColorBuffer, DepthBuffer]
-	e <- get env
-	render $ world e
-	swapBuffers
+glRunAs2D :: IO () -> IO ()
+glRunAs2D draw = do
+	matrixMode $= Modelview 0
+	loadIdentity
+
+	--matrixMode $=  Projection
+	--loadIdentity
+
+	(_, Size w h) <- get viewport
+
+	--ortho (-50) 50 (-50) (50) (-1000) 1000
+	ortho 0 (conv w) 0 (conv h) (-1000) 1000
+
+	preservingMatrix draw
 
 idle :: IORef Env -> IO ()
 idle env = do
@@ -60,34 +68,9 @@ idle env = do
 	env $= tick time e
 	postRedisplay Nothing
 
-reshape :: Size -> IO ()
-reshape s@(Size x y) = do
-	viewport $= (Position 0 0 , s)
-
-	matrixMode $= Projection
-	loadIdentity
-	perspective 45 ((fromIntegral x)/(fromIntegral y)) 0.1 100
-	matrixMode $= Modelview 0
---__----__----__----__----__----__----__----__----__----__----__----__--
-
-
 tick :: Int -> Env -> Env
 tick tnew (Env v sprs) = Env v{clock = clock v+elapsed} s
 	where
 	s = map idleSprite sprs
 	elapsed = fromIntegral $ tnew - clock v
 	idleSprite z = z
-
-initGL :: IO Window
-initGL = do
-	initialDisplayMode $= [DoubleBuffered]
-	initialWindowSize $= Size 640 480
-	window <- createWindow "mma"
-	clearColor $= Color4 0 0 0 0
-
-	-- make sure the viewport and perspective are correct when
-	-- initialWindowSize is ignored
-	s <- get screenSize
-	reshape s
-
-	return window

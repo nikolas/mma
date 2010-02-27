@@ -1,7 +1,6 @@
 module Bindings (
+	keyboardMouse,
 	motion,
-	passiveMotion,
-	processEnv,
 ) where
 
 import Data.IORef
@@ -9,30 +8,32 @@ import Graphics.UI.GLUT
 
 import State
 
+keyboardMouse _ env key state modifiers pos = do
+	e <- get env
+	print $ sprites e
+	env $= userAction e key state
+
 motion :: IORef Env -> Position -> IO ()
 motion env pos = do
 	e <- get env
-	--pos $= oglToGlut pos
-	print $ sprites e
 	env $= mouseMotion e pos
 
-passiveMotion :: IORef Env -> Position -> IO ()
-passiveMotion env pos = do
-	e <- get env
-	--pos $= oglToGlut pos
-	env $= passiveMouseMotion e pos
 
-processEnv :: Key -> Env -> Env
-processEnv k e = case k of
-	(MouseButton LeftButton) 
-		-> e { sprites = (Square (mousePos $ vars $ e) [] False) : sprites e }
-	_ -> e
+userAction :: Env -> Key -> KeyState -> Env
+
+-- place a sprite
+userAction e (MouseButton RightButton) Down =
+	e { sprites = (makeSprite (mousePos $ vars $ e))  : sprites e }
 
 -- start dragging a sprite
---userAction (Env v sprts)
---	(MouseButton LeftButton) _ = Env v $
---		map toggleSticky (filter (isMouseOverSprite v) sprts)
---		++ filter (not . isMouseOverSprite v) sprts
+userAction e (MouseButton LeftButton) Down =
+	let pos = (mousePos $ vars $ e) in
+		e { sprites =
+			(map toggleSticky (filter (isMouseOverSprite pos) (sprites e))
+			++ filter (not . isMouseOverSprite pos) (sprites e))
+		}
+
+userAction e _ _ = e
 
 
 mouseMotion :: Env -> Position -> Env
@@ -44,6 +45,3 @@ mouseMotion (Env v s) pos = Env v{mousePos = pos}
 		if sticky q
 		then q{ currentPos = pos }
 		else q
-
-passiveMouseMotion :: Env -> Position -> Env
-passiveMouseMotion (Env v s) pos = Env v{mousePos = pos} s

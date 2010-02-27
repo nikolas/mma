@@ -1,14 +1,13 @@
 module Render (
-	world,
-	renderSprite,
+	drawWorld,
 ) where
+import Graphics.UI.GLUT (($=))
 import qualified Graphics.UI.GLUT as GL
 
-import MetaGL
 import State
 
 
-world :: Env -> GLC
+{-world :: Env -> GLC
 world (Env v s) = serial $ concat $ renderMenu v : map renderSprite s
 
 renderSprite :: Sprite -> [GLC]
@@ -41,9 +40,21 @@ renderButton i = [
 		vertex 9 5 ]
 	]
 	where
-	x = [-30,-20 ..]
+	x = [-30,-20 ..]-}
 
+drawWorld :: Env -> IO ()
+drawWorld e = do
+	GL.currentColor $= GL.Color4 1 0.25 0.5 0
+	mapM_ (drawSprite) $ sprites e
 
--- distance from camera
-dist :: GL.GLdouble
-dist = (-50)
+drawSprite :: Sprite -> IO ()
+drawSprite s = GL.renderPrimitive GL.Quads $ mapM_ GL.vertex $ spritePoints s
+	where
+	squarePoints :: [GL.Vertex2 GL.GLdouble]
+	squarePoints =
+		[(GL.Vertex2 0 sz)
+		, (GL.Vertex2 0 0)
+		, (GL.Vertex2 sz 0)
+		, (GL.Vertex2 sz sz)]
+
+	sz = size s
