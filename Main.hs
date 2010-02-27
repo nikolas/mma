@@ -29,7 +29,7 @@ main = do
 	let
 		moveCursor p = do
 			(Env v sp) <- readIORef env
-			print p
+			--print p
 			writeIORef env $ Env v{mousePos = p} sp
 		trans :: Position -> IO Position
 		trans (Position x y) = do
@@ -56,7 +56,6 @@ glRunAs2D draw = do
 
 	(_, Size w h) <- get viewport
 
-	--ortho (-50) 50 (-50) (50) (-1000) 1000
 	ortho 0 (conv w) 0 (conv h) (-1000) 1000
 
 	preservingMatrix draw

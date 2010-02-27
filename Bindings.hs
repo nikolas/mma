@@ -4,13 +4,14 @@ module Bindings (
 ) where
 
 import Data.IORef
+import Data.List
 import Graphics.UI.GLUT
 
 import State
 
 keyboardMouse _ env key state modifiers pos = do
 	e <- get env
-	print $ sprites e
+	--print $ sprites e
 	env $= userAction e key state
 
 motion :: IORef Env -> Position -> IO ()
@@ -27,11 +28,20 @@ userAction e (MouseButton RightButton) Down =
 
 -- start dragging a sprite
 userAction e (MouseButton LeftButton) Down =
-	let pos = (mousePos $ vars $ e) in
-		e { sprites =
-			(map toggleSticky (filter (isMouseOverSprite pos) (sprites e))
-			++ filter (not . isMouseOverSprite pos) (sprites e))
+	if length spritesWithin > 0
+		then e { sprites =
+			(toggleSticky selected) : (delete selected (sprites e))
 		}
+		else e
+	where
+	pos :: Position
+	pos = (mousePos $ vars $ e)
+
+	selected :: Sprite
+	selected = head spritesWithin
+
+	spritesWithin :: [Sprite]
+	spritesWithin = filter (within pos) (sprites e)
 
 userAction e _ _ = e
 
