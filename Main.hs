@@ -8,6 +8,7 @@ import State
 
 main :: IO ()
 main = do
+	-- make pointer to world state
 	env <- newIORef initialEnvironment
 
 	-- make the GL window
@@ -16,11 +17,17 @@ main = do
 	initialDisplayMode $= [DoubleBuffered]
 	wnd <- createWindow "mma"
 
-	-- callbacks
+	-- textures need to be in the IO monad, so they aren't part of the Env
+	-- textures <- initTextures
+	textures <- loadTexture "play.png"
+
+	-- set up callbacks
 	displayCallback $= (glRunAs2D $ do
 		clearColor $= Color4 1 0 1 1
 		clear [ColorBuffer, DepthBuffer]
-		readIORef env >>= drawWorld
+		e <- readIORef env
+		drawWorld e textures
+		--readIORef env >>= drawWorld
 		flush
 		swapBuffers)
 
@@ -51,8 +58,8 @@ glRunAs2D draw = do
 	matrixMode $= Modelview 0
 	loadIdentity
 
-	--matrixMode $=  Projection
-	--loadIdentity
+	matrixMode $=  Projection
+	loadIdentity
 
 	(_, Size w h) <- get viewport
 
