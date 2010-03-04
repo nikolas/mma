@@ -7,6 +7,7 @@ import Data.IORef
 import Data.List
 import Graphics.UI.GLUT
 
+import Sprite
 import State
 
 keyboardMouse _ env key state modifiers pos = do

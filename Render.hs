@@ -3,6 +3,8 @@ module Render (
 ) where
 import Graphics.UI.GLUT
 
+import Graphics
+import Sprite
 import State
 
 drawWorld :: Env -> MmaTexture -> IO ()
