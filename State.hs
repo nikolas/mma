@@ -1,98 +1,98 @@
 module State (
-	Env(..),
-	initialEnvironment,
+    Env(..),
+    initialEnvironment,
 
-	Vars(..),
-	Mode(..),
+    Vars(..),
+    Mode(..),
 
-	MmaMenu(..),
-	MmaButton(..),
+    MmaMenu(..),
+    MmaButton(..),
 
-	MmaTextures(..),
-	MmaTexture(..),
+    MmaTextures(..),
+    MmaTexture(..),
 
-	-- misc functions that belong.... elsewhere???
-	Rectangle(..),
+    -- misc functions that belong.... elsewhere???
+    Rectangle(..),
 ) where
 import Graphics.UI.GLUT
 
 import Sprite
 
 data Env = Env
-	{
-		vars :: Vars,
-		sprites :: [Sprite]
-	} deriving Show
+    {
+        vars :: Vars,
+        sprites :: [Sprite]
+    } deriving Show
 
 initialEnvironment :: Env
 initialEnvironment =
-	Env ( Vars {
-		clock = 0,
-		mousePos = Position 0 0,
-		menu = initialMenu,
-		mode = Intro }
-		)
-	[ ]
+    Env ( Vars {
+        clock = 0,
+        mousePos = Position 0 0,
+        menu = initialMenu,
+        mode = Intro }
+        )
+    [ ]
 
 data Vars = Vars
-	{
-		clock :: Int,
-		mousePos :: Position,
-		menu :: MmaMenu,
-		mode :: Mode
-	} deriving Show
+    {
+        clock :: Int,
+        mousePos :: Position,
+        menu :: MmaMenu,
+        mode :: Mode
+    } deriving Show
 
 data Mode = Animator | Intro
-	deriving (Show, Eq)
+    deriving (Show, Eq)
 
 data MmaMenu = MmaMenu
-	{
-		playMmaButton :: MmaButton
-		{-
-		recMmaButton :: MmaButton,
+    {
+        playMmaButton :: MmaButton
+        {-
+        recMmaButton :: MmaButton,
 
-		-- stepper
-		prevFrameMmaButton :: MmaButton,
-		nextFrameMmaButton :: MmaButton,
+        -- stepper
+        prevFrameMmaButton :: MmaButton,
+        nextFrameMmaButton :: MmaButton,
 
-		-- sprite chooser
-		prevSpriteMmaButton :: MmaButton,
-		nextSpriteMmaButton :: MmaButton
-		-}
-	} deriving Show
+        -- sprite chooser
+        prevSpriteMmaButton :: MmaButton,
+        nextSpriteMmaButton :: MmaButton
+        -}
+    } deriving Show
 
 initialMenu :: MmaMenu
 initialMenu = MmaMenu b
-	where
-	b = MmaButton (Rectangle 20 20 50 70) False
+    where
+    b = MmaButton (Rectangle 20 20 50 70) False
 
 data MmaButton = MmaButton
-	{
-		buttonRect :: Rectangle,
+    {
+        buttonRect :: Rectangle,
 
-		--buttonTex :: MmaTexture,
+        --buttonTex :: MmaTexture,
 
-		buttonState :: Bool
-	} deriving Show
+        buttonState :: Bool
+    } deriving Show
 
 -- just a dictionary, really
 data MmaTextures = MmaTextures
-	{
-		introTexture :: MmaTexture,
-		playTexture :: MmaTexture
-	} deriving Show
+    {
+        introTexture :: MmaTexture,
+        playTexture :: MmaTexture
+    } deriving Show
 
 data MmaTexture = MmaTexture
-	{
-		textureWidth :: GLsizei,
-		textureHeight :: GLsizei,
-		textureObject :: TextureObject
-	} deriving Show
+    {
+        textureWidth :: GLsizei,
+        textureHeight :: GLsizei,
+        textureObject :: TextureObject
+    } deriving Show
 
 data Rectangle = Rectangle
-	{
-		rectX :: GLdouble,
-		rectY :: GLdouble,
-		rectWidth :: GLdouble,
-		rectHeight :: GLdouble
-	} deriving (Show, Eq)
+    {
+        rectX :: GLdouble,
+        rectY :: GLdouble,
+        rectWidth :: GLdouble,
+        rectHeight :: GLdouble
+    } deriving (Show, Eq)

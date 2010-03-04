@@ -1,5 +1,5 @@
 module Util (
-	conv,
+    conv,
 ) where
 
 -- generalize an Integral
