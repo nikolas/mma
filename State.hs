@@ -3,10 +3,12 @@ module State (
 	initialEnvironment,
 
 	Vars(..),
+	Mode(..),
 
 	MmaMenu(..),
 	MmaButton(..),
 
+	MmaTextures(..),
 	MmaTexture(..),
 
 	-- misc functions that belong.... elsewhere???
@@ -23,17 +25,25 @@ data Env = Env
 	} deriving Show
 
 initialEnvironment :: Env
-initialEnvironment = Env
-	( Vars (Position 0 0) False False initialMenu )
+initialEnvironment =
+	Env ( Vars {
+		clock = 0,
+		mousePos = Position 0 0,
+		menu = initialMenu,
+		mode = Intro }
+		)
 	[ ]
 
 data Vars = Vars
 	{
+		clock :: Int,
 		mousePos :: Position,
-		playing :: Bool,
-		recording :: Bool,
-		menu :: MmaMenu
+		menu :: MmaMenu,
+		mode :: Mode
 	} deriving Show
+
+data Mode = Animator | Intro
+	deriving (Show, Eq)
 
 data MmaMenu = MmaMenu
 	{
@@ -63,6 +73,13 @@ data MmaButton = MmaButton
 		--buttonTex :: MmaTexture,
 
 		buttonState :: Bool
+	} deriving Show
+
+-- just a dictionary, really
+data MmaTextures = MmaTextures
+	{
+		introTexture :: MmaTexture,
+		playTexture :: MmaTexture
 	} deriving Show
 
 data MmaTexture = MmaTexture

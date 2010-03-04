@@ -1,5 +1,7 @@
 module Graphics (
 	glRunAs2D,
+	loadAllTextures,
+
 	loadTexture,
 	freeTexture,
 	drawTexture,
@@ -50,6 +52,16 @@ loadTexture filepath = do
 	freeSurface surface
 
 	return (MmaTexture width height textureObj)
+
+loadAllTextures :: IO MmaTextures
+loadAllTextures = do
+	introtex <- loadTexture "intro.png"
+	playtex <- loadTexture "play.png"
+
+	return ( MmaTextures {
+		introTexture = introtex,
+		playTexture = playtex
+		} )
 
 freeTexture :: MmaTexture -> IO ()
 freeTexture tex = do
