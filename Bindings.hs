@@ -10,29 +10,29 @@ import State
 import Sprite
 
 keyboardMouse _ env key state modifiers pos = do
-    e <- get env
+  e <- get env
 
-    let
-        dispatchAction = case (mode $ vars $ e) of
-            Intro -> introAction
-            Animator -> animatorAction
+  let
+    dispatchAction = case (mode $ vars $ e) of
+      Intro -> introAction
+      Animator -> animatorAction
 
-    env $= dispatchAction e key state
+  env $= dispatchAction e key state
 
 motion :: IORef Env -> Position -> IO ()
 motion env pos = do
-    e <- get env
+  e <- get env
 
-    let
-        dispatchMotion = case (mode $ vars $ e) of
-            Intro -> introMotion
-            Animator -> animatorMotion
+  let
+    dispatchMotion = case (mode $ vars $ e) of
+      Intro -> introMotion
+      Animator -> animatorMotion
 
-    env $= dispatchMotion e pos
+  env $= dispatchMotion e pos
 
 
 {-
- - keyboar/mouse buttons
+ - keyboard/mouse buttons
  -}
 
 introAction :: Env -> Key -> KeyState -> Env
@@ -47,20 +47,24 @@ animatorAction e (MouseButton RightButton) Down =
 
 -- start dragging a sprite
 animatorAction e (MouseButton LeftButton) Down =
-    if length spritesWithin > 0
-        then e { sprites =
-            (toggleSticky selected) : (delete selected (sprites e))
-        }
-        else e
+  if length spritesWithin > 0
+  then e { sprites =
+              (toggleSticky selected) : (delete selected (sprites e))
+         }
+  else e
     where
-    pos :: Position
-    pos = (mousePos $ vars $ e)
+      pos :: Position
+      pos = (mousePos $ vars $ e)
 
-    selected :: Sprite
-    selected = head spritesWithin
+      selected :: Sprite
+      selected = head spritesWithin
 
-    spritesWithin :: [Sprite]
-    spritesWithin = filter (within pos) (sprites e)
+      spritesWithin :: [Sprite]
+      spritesWithin = filter (within pos) (sprites e)
+
+animatorAction e (MouseButton LeftButton) Up =
+  Env (vars e) $ map (\s -> s {sticky = False}) (sprites e)
+
 animatorAction e _ _ = e
 
 
