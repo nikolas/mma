@@ -10,9 +10,6 @@ module State (
 
     MmaTextures(..),
     MmaTexture(..),
-
-    -- misc functions that belong.... elsewhere???
-    Rectangle(..),
 ) where
 import Graphics.UI.GLUT
 
@@ -88,11 +85,3 @@ data MmaTexture = MmaTexture
         textureHeight :: GLsizei,
         textureObject :: TextureObject
     } deriving Show
-
-data Rectangle = Rectangle
-    {
-        rectX :: GLdouble,
-        rectY :: GLdouble,
-        rectWidth :: GLdouble,
-        rectHeight :: GLdouble
-    } deriving (Show, Eq)

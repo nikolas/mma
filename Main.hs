@@ -39,6 +39,7 @@ main = do
       (Env v sp) <- readIORef env
                    --print p
       writeIORef env $ Env v{mousePos = p} sp
+
     trans :: Position -> IO Position
     trans (Position x y) = do
       (_, Size _ h) <- get viewport
@@ -49,8 +50,9 @@ main = do
   motionCallback $= Just (\pos ->
                            trans pos >>= motion env)
 
-  passiveMotionCallback $= Just (\pos ->
-                                  trans pos >>= moveCursor >> postRedisplay Nothing)
+  passiveMotionCallback $=
+    Just (\pos ->
+           trans pos >>= moveCursor >> postRedisplay Nothing)
 
   mainLoop
   -- TODO: stop using all the CPU, silly!

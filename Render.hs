@@ -1,5 +1,5 @@
 module Render (
-    drawWorld,
+  drawWorld,
 ) where
 import Graphics.UI.GLUT
 
@@ -24,9 +24,12 @@ drawAnimator e t = do
     drawMenu (menu $ vars $ e) t
 
 drawIntro :: Env -> MmaTextures -> IO ()
-drawIntro e t = drawTexture 0 y (introTexture t) 1
-    where
-    y = (-) 480$ (conv $ clock $ vars $ e) / 10
+drawIntro e t = do
+  (_, Size _ h) <- get viewport
+  let y = conv $ (conv h) -
+          (((clock $ vars $ e) `div` 10) `mod` (conv h*2))
+  drawTexture 0 y (introTexture t) 1
+
 
 drawSprite :: Sprite -> IO ()
 drawSprite s = renderPrimitive Quads $ mapM_ vertex $ spritePoints s

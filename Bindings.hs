@@ -8,6 +8,7 @@ import Graphics.UI.GLUT
 
 import State
 import Sprite
+import Util
 
 keyboardMouse _ env key state modifiers pos = do
   e <- get env
@@ -49,7 +50,9 @@ animatorAction e (MouseButton RightButton) Down =
 animatorAction e (MouseButton LeftButton) Down =
   if length spritesWithin > 0
   then e { sprites =
-              (toggleSticky selected) : (delete selected (sprites e))
+              (selected{ sticky = not (sticky selected),
+                         offset = posOp (-) selectedPos (posConv pos)
+                  }) : (delete selected (sprites e))
          }
   else e
     where
@@ -58,6 +61,9 @@ animatorAction e (MouseButton LeftButton) Down =
 
       selected :: Sprite
       selected = head spritesWithin
+
+      selectedPos :: Pos
+      selectedPos = ( (rectX$rectangle$selected),(rectY$rectangle$selected) )
 
       spritesWithin :: [Sprite]
       spritesWithin = filter (within pos) (sprites e)
@@ -75,12 +81,8 @@ animatorAction e _ _ = e
 introMotion :: Env -> Position -> Env
 introMotion e _ = e
 
+-- drag a sprite
 animatorMotion :: Env -> Position -> Env
-animatorMotion (Env v s) pos = Env v{mousePos = pos}
-    $ map updateSprite s
-    where
-    -- drag a sprite
-    updateSprite q =
-        if sticky q
-        then q{ currentPos = pos }
-        else q
+animatorMotion (Env v s) p =
+  -- update mouse position and any sticky sprites
+  Env v{mousePos = p} $ map (dragSprite p) s
