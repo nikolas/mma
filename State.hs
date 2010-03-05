@@ -61,7 +61,7 @@ data MmaMenu = MmaMenu
 initialMenu :: MmaMenu
 initialMenu = MmaMenu b
     where
-    b = MmaButton (Rectangle 20 20 50 70) False
+    b = MmaButton (Rectangle 20 15 50 70) False
 
 data MmaButton = MmaButton
     {
@@ -76,7 +76,8 @@ data MmaButton = MmaButton
 data MmaTextures = MmaTextures
     {
         introTexture :: MmaTexture,
-        playTexture :: MmaTexture
+        playTexture :: MmaTexture,
+        menuTexture :: MmaTexture
     } deriving Show
 
 data MmaTexture = MmaTexture

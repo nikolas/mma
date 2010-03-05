@@ -3,6 +3,7 @@ module Sprite (
   Rectangle(..),
   makeSprite,
   spritePoints,
+  selectSprite,
   dragSprite,
   within,
 
@@ -38,6 +39,12 @@ makeSprite (Position x y) =
 
 spritePoints :: Sprite -> [Vertex2 GLdouble]
 spritePoints s = vertexRect (rectangle s)
+
+selectSprite :: Position -> Sprite -> Sprite
+selectSprite offs s =
+  s { sticky = True, offset = posOp (-) myPos (posConv offs) }
+    where
+      myPos = ( (rectX$rectangle$s),(rectY$rectangle$s) )
 
 dragSprite :: Position -> Sprite -> Sprite
 dragSprite p s =

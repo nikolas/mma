@@ -57,10 +57,12 @@ loadAllTextures :: IO MmaTextures
 loadAllTextures = do
     introtex <- loadTexture "intro.png"
     playtex <- loadTexture "play.png"
+    menutex <- loadTexture "menu.png"
 
     return ( MmaTextures {
         introTexture = introtex,
-        playTexture = playtex
+        playTexture = playtex,
+        menuTexture = menutex
         } )
 
 freeTexture :: MmaTexture -> IO ()

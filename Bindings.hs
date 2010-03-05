@@ -3,12 +3,11 @@ module Bindings (
     motion,
 ) where
 import Data.IORef
-import Data.List (delete)
+import Data.List ((\\))
 import Graphics.UI.GLUT
 
 import State
 import Sprite
-import Util
 
 keyboardMouse _ env key state modifiers pos = do
   e <- get env
@@ -46,27 +45,17 @@ animatorAction :: Env -> Key -> KeyState -> Env
 animatorAction e (MouseButton RightButton) Down =
     e { sprites = (makeSprite (mousePos $ vars $ e))  : sprites e }
 
--- start dragging a sprite
+
 animatorAction e (MouseButton LeftButton) Down =
-  if length spritesWithin > 0
-  then e { sprites =
-              (selected{ sticky = not (sticky selected),
-                         offset = posOp (-) selectedPos (posConv pos)
-                  }) : (delete selected (sprites e))
-         }
-  else e
+  e { sprites = (map (selectSprite mp) spritesUnder ++ theRest) }
     where
-      pos :: Position
-      pos = (mousePos $ vars $ e)
+      mp :: Position
+      mp = mousePos $ vars $ e
 
-      selected :: Sprite
-      selected = head spritesWithin
+      spritesUnder :: [Sprite]
+      spritesUnder = filter (within mp) (sprites e)
 
-      selectedPos :: Pos
-      selectedPos = ( (rectX$rectangle$selected),(rectY$rectangle$selected) )
-
-      spritesWithin :: [Sprite]
-      spritesWithin = filter (within pos) (sprites e)
+      theRest = (sprites e) \\ spritesUnder
 
 animatorAction e (MouseButton LeftButton) Up =
   Env (vars e) $ map (\s -> s {sticky = False}) (sprites e)
