@@ -37,42 +37,42 @@ motion env pos = do
 
 introAction :: Env -> Key -> KeyState -> Env
 introAction (Env v s) (MouseButton _) Down =
-    Env (v {mode = Animator}) s
+  Env (v {mode = Animator}) s
 introAction e _ _ = e
 
 animatorAction :: Env -> Key -> KeyState -> Env
 -- place a sprite
 animatorAction e (MouseButton RightButton) Down =
-    e { sprites = (makeSprite (mousePos $ vars $ e))  : sprites e }
+  e { sprites = (makeSprite (mousePos $ vars $ e))  : sprites e }
 
 animatorAction e (MouseButton LeftButton) Down =
-  e { sprites = (map (initDragSprite mp) spritesUnder ++ theRest) }
+  e { sprites = (updateSelected . updateDragged) (sprites e) }
     where
       -- TODO: just look at this mess!
+      updateSelected :: [Sprite] -> [Sprite]
+      --updateSelected ss = map (\s -> s {selected=True}) (spritesUnder ss)
+      --                    ++ map (\s -> s {selected=False}) (theRest ss)
+      updateSelected ss = map (\s -> s {selected=True}) (spriteUnder ss) ++ map (\s -> s {selected=False}) (ss \\ (spriteUnder ss))
+
+      updateDragged :: [Sprite] -> [Sprite]
+      --updateDragged ss = map (initDragSprite mp) (spritesUnder ss) ++ (theRest ss)
+      updateDragged ss = map (initDragSprite mp) (spriteUnder ss) ++ (ss \\ spriteUnder ss)
+
+      spriteUnder :: [Sprite] -> [Sprite]
+      spriteUnder ss = oneOrNone $ filter (within mp) ss
+
+      -- stupid... Maybe I should learn how to use Maybe?
+      oneOrNone :: [a] -> [a]
+      oneOrNone x = if length x >= 1 then [head x] else []
+
       mp :: Position
       mp = mousePos $ vars $ e
 
-      spritesUnder :: [Sprite]
-      spritesUnder = filter (within mp) (sprites e)
-
-      theRest :: [Sprite]
-      theRest = (sprites e) \\ spritesUnder
-
 animatorAction e (MouseButton LeftButton) Up =
-  Env (vars e) $ unsticky $ (map (\s -> s{selected=True}) spritesUnder
-                             ++ map (\s -> s{selected=False}) theRest)
-      where
-        mp :: Position
-        mp = mousePos $ vars $ e
-
-        spritesUnder :: [Sprite]
-        spritesUnder = filter (within mp) (sprites e)
-
-        theRest :: [Sprite]
-        theRest = (sprites e) \\ spritesUnder
-
-        unsticky :: [Sprite] -> [Sprite]
-        unsticky = map (\s -> s {sticky = False})
+  e { sprites = unsticky (sprites e) }
+    where
+      unsticky :: [Sprite] -> [Sprite]
+      unsticky = map (\s -> s {sticky = False})
 
 animatorAction e _ _ = e
 

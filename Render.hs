@@ -10,17 +10,17 @@ import Util
 
 drawWorld :: Env -> MmaTextures -> IO ()
 drawWorld e =
-    case (mode $ vars $ e) of
-        Intro -> do
-            drawIntro e
-        Animator -> do
-            drawAnimator e
+  case (mode $ vars $ e) of
+    Intro -> do
+      drawIntro e
+    Animator -> do
+      drawAnimator e
 
 drawAnimator :: Env -> MmaTextures -> IO ()
 drawAnimator e t = do
-    currentColor $= Color4 0.2 0 0.3 0
-    mapM_ (drawSprite) $ sprites e
-    drawMenu (menu $ vars $ e) t
+  --currentColor $= Color4 0.2 0 0.3 0
+  mapM_ (drawSprite) $ sprites e
+  drawMenu (menu $ vars $ e) t
 
 drawIntro :: Env -> MmaTextures -> IO ()
 drawIntro e t = do
@@ -32,7 +32,12 @@ drawIntro e t = do
 
 
 drawSprite :: Sprite -> IO ()
-drawSprite s = renderPrimitive Quads $ mapM_ vertex $ spritePoints s
+drawSprite s = do
+  currentColor $= if selected s
+                  then Color4 1 0.7 0.5 0
+                  else Color4 0.2 0 0.3 0
+
+  renderPrimitive Quads $ mapM_ vertex $ spritePoints s
 
 drawMenu :: MmaMenu -> MmaTextures -> IO ()
 drawMenu m t = do
