@@ -45,20 +45,34 @@ animatorAction :: Env -> Key -> KeyState -> Env
 animatorAction e (MouseButton RightButton) Down =
     e { sprites = (makeSprite (mousePos $ vars $ e))  : sprites e }
 
-
 animatorAction e (MouseButton LeftButton) Down =
-  e { sprites = (map (selectSprite mp) spritesUnder ++ theRest) }
+  e { sprites = (map (initDragSprite mp) spritesUnder ++ theRest) }
     where
+      -- TODO: just look at this mess!
       mp :: Position
       mp = mousePos $ vars $ e
 
       spritesUnder :: [Sprite]
       spritesUnder = filter (within mp) (sprites e)
 
+      theRest :: [Sprite]
       theRest = (sprites e) \\ spritesUnder
 
 animatorAction e (MouseButton LeftButton) Up =
-  Env (vars e) $ map (\s -> s {sticky = False}) (sprites e)
+  Env (vars e) $ unsticky $ (map (\s -> s{selected=True}) spritesUnder
+                             ++ map (\s -> s{selected=False}) theRest)
+      where
+        mp :: Position
+        mp = mousePos $ vars $ e
+
+        spritesUnder :: [Sprite]
+        spritesUnder = filter (within mp) (sprites e)
+
+        theRest :: [Sprite]
+        theRest = (sprites e) \\ spritesUnder
+
+        unsticky :: [Sprite] -> [Sprite]
+        unsticky = map (\s -> s {sticky = False})
 
 animatorAction e _ _ = e
 

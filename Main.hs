@@ -28,7 +28,6 @@ main = do
                          clear [ColorBuffer, DepthBuffer]
                          e <- readIORef env
                          drawWorld e textures
-                         --readIORef env >>= drawWorld
                          flush
                          swapBuffers)
 
