@@ -18,7 +18,6 @@ drawWorld e =
 
 drawAnimator :: Env -> MmaTextures -> IO ()
 drawAnimator e t = do
-  --currentColor $= Color4 0.2 0 0.3 0
   mapM_ (drawSprite) $ sprites e
   drawMenu (menu $ vars $ e) t
 
@@ -33,11 +32,15 @@ drawIntro e t = do
 
 drawSprite :: Sprite -> IO ()
 drawSprite s = do
-  currentColor $= if selected s
-                  then Color4 1 0.7 0.5 0
-                  else Color4 0.2 0 0.3 0
-
+  currentColor $= Color4 0.2 0 0.3 0
   renderPrimitive Quads $ mapM_ vertex $ spritePoints s
+
+  -- TODO: why isn't this transparent?
+  if selected s
+    then do
+      currentColor $= Color4 0.85 0 0.4 0.8
+      renderPrimitive Quads $ mapM_ vertex $ selectPoints s
+    else return ()
 
 drawMenu :: MmaMenu -> MmaTextures -> IO ()
 drawMenu m t = do

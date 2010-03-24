@@ -50,13 +50,12 @@ animatorAction e (MouseButton LeftButton) Down =
     where
       -- TODO: just look at this mess!
       updateSelected :: [Sprite] -> [Sprite]
-      --updateSelected ss = map (\s -> s {selected=True}) (spritesUnder ss)
-      --                    ++ map (\s -> s {selected=False}) (theRest ss)
-      updateSelected ss = map (\s -> s {selected=True}) (spriteUnder ss) ++ map (\s -> s {selected=False}) (ss \\ (spriteUnder ss))
+      updateSelected ss = map (\s -> s {selected=True}) (spriteUnder ss) ++
+                          map (\s -> s {selected=False}) (ss \\ (spriteUnder ss))
 
       updateDragged :: [Sprite] -> [Sprite]
-      --updateDragged ss = map (initDragSprite mp) (spritesUnder ss) ++ (theRest ss)
-      updateDragged ss = map (initDragSprite mp) (spriteUnder ss) ++ (ss \\ spriteUnder ss)
+      updateDragged ss = map (initDragSprite mp) (spriteUnder ss) ++
+                         (ss \\ spriteUnder ss)
 
       spriteUnder :: [Sprite] -> [Sprite]
       spriteUnder ss = oneOrNone $ filter (within mp) ss

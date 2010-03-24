@@ -36,7 +36,6 @@ main = do
   let
     moveCursor p = do
       (Env v sp) <- readIORef env
-                   --print p
       writeIORef env $ Env v{mousePos = p} sp
 
     trans :: Position -> IO Position

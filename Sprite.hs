@@ -3,6 +3,7 @@ module Sprite (
   Rectangle(..),
   makeSprite,
   spritePoints,
+  selectPoints,
   initDragSprite,
   dragSprite,
   within,
@@ -40,7 +41,16 @@ makeSprite (Position x y) =
   Sprite (Rectangle (conv x) (conv y) 20 20) [] False False (0,0)
 
 spritePoints :: Sprite -> [Vertex2 GLdouble]
-spritePoints s = vertexRect (rectangle s)
+spritePoints s = vertexRect $ rectangle s
+
+-- calculate a rectangle around the sprite
+selectPoints :: Sprite -> [Vertex2 GLdouble]
+selectPoints s = vertexRect $ r
+                                { rectWidth = rectWidth r + 8.0,
+                                  rectHeight = rectHeight r + 8.0
+                                               }
+                                where
+                                  r = rectangle s
 
 -- start dragging a sprite
 initDragSprite :: Position -> Sprite -> Sprite
@@ -77,5 +87,5 @@ vertexRect (Rectangle x y width height) =
     , (Vertex2 (x+w) (y-h))
     , (Vertex2 (x+w) (y+h))]
     where
-    w = width / 2
-    h = height / 2
+      w = width / 2
+      h = height / 2
