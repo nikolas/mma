@@ -9,7 +9,9 @@ import Graphics.UI.GLUT
 import State
 import Sprite
 
-keyboardMouse _ env key state modifiers pos = do
+keyboardMouse :: Window -> IORef Env -> Key -> KeyState -> Modifiers -> Position
+                 -> IO ()
+keyboardMouse _ env key state _ _ = do
   e <- get env
 
   let

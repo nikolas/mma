@@ -48,9 +48,9 @@ selectPoints :: Sprite -> [Vertex2 GLdouble]
 selectPoints s = vertexRect $ r
                                 { rectWidth = rectWidth r + 8.0,
                                   rectHeight = rectHeight r + 8.0
-                                               }
-                                where
-                                  r = rectangle s
+                                }
+                                  where
+                                    r = rectangle s
 
 -- start dragging a sprite
 initDragSprite :: Position -> Sprite -> Sprite

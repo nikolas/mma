@@ -19,7 +19,6 @@ main = do
   wnd <- createWindow "Marlon Moonglow's Animator"
 
   -- textures need to be in the IO monad, so they aren't part of the Env
-  -- textures <- initTextures
   textures <- loadAllTextures
 
   -- set up callbacks
