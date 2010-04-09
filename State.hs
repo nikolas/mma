@@ -46,15 +46,22 @@ data MmaMenu = MmaMenu
     {
         playMmaButton :: MmaButton
         {-
-        recMmaButton :: MmaButton,
+        -- sprite chooser
+        sprtWindow :: MmaWindow,
+        nextSprtButton :: MmaButton,
+        prevSprtButton :: MmaButton,
+
+        -- background chooser
+        bgWindow :: MmaWindow,
+        nextBgButton :: MmaButton,
+        prevBgButton :: MmaButton,
 
         -- stepper
-        prevFrameMmaButton :: MmaButton,
-        nextFrameMmaButton :: MmaButton,
+        frameWindow :: MmaWindow,
+        prevFrameButton :: MmaButton,
+        nextFrameButton :: MmaButton,
 
-        -- sprite chooser
-        prevSpriteMmaButton :: MmaButton,
-        nextSpriteMmaButton :: MmaButton
+        saveButton :: MmaButton
         -}
     } deriving Show
 
