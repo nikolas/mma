@@ -27,15 +27,6 @@ data Sprite =
     offset :: Pos
     } deriving (Show, Eq)
 
-data Rectangle =
-  Rectangle
-  {
-    rectX :: GLdouble,
-    rectY :: GLdouble,
-    rectWidth :: GLdouble,
-    rectHeight :: GLdouble
-  } deriving (Show, Eq)
-
 makeSprite :: Position -> Sprite
 makeSprite (Position x y) =
   Sprite (Rectangle (conv x) (conv y) 20 20) [] False False (0,0)

@@ -4,6 +4,7 @@ module Render (
 import Graphics.UI.GLUT
 
 import Graphics
+import Menu
 import Sprite
 import State
 import Util
@@ -11,10 +12,8 @@ import Util
 drawWorld :: Env -> MmaTextures -> IO ()
 drawWorld e =
   case (mode $ vars $ e) of
-    Intro -> do
-      drawIntro e
-    Animator -> do
-      drawAnimator e
+    Intro -> drawIntro e
+    Animator -> drawAnimator e
 
 drawAnimator :: Env -> MmaTextures -> IO ()
 drawAnimator e t = do
@@ -45,7 +44,7 @@ drawSprite s = do
 drawMenu :: MmaMenu -> MmaTextures -> IO ()
 drawMenu m t = do
   drawTexture 0 0 (menuTexture t) 1
-  drawButton (playMmaButton m) (playTexture t)
+  drawButton (playButton m) (playButtonTexture t)
 
 drawButton :: MmaButton -> MmaTexture -> IO ()
 drawButton (MmaButton r _) tex = do

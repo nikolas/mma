@@ -1,9 +1,11 @@
 module Util (
     conv,
-
-    Pos,
     posConv,
     posOp,
+    Pos,
+    MmaTexture(..),
+    MmaTextures(..),
+    Rectangle(..),
 ) where
 import Graphics.UI.GLUT
 
@@ -25,6 +27,36 @@ type Pos = (GLdouble,GLdouble)
 posConv :: Position -> Pos
 posConv (Position x y) = (conv x,conv y)
 
--- apply a binary function over Pos
+-- apply a binary function on a Pos
 posOp :: (GLdouble -> GLdouble -> GLdouble) -> Pos -> Pos -> Pos
 posOp op (a,b) (x,y) = (a `op` x, b `op` y)
+
+data Rectangle =
+  Rectangle
+  {
+    rectX :: GLdouble,
+    rectY :: GLdouble,
+    rectWidth :: GLdouble,
+    rectHeight :: GLdouble
+  } deriving (Show, Eq)
+
+data MmaTexture = MmaTexture
+                  {
+                    textureWidth :: GLsizei,
+                    textureHeight :: GLsizei,
+                    textureObject :: TextureObject
+                  } deriving Show
+
+data MmaTextures = MmaTextures
+                   {
+                     introTexture :: MmaTexture,
+                     menuTexture :: MmaTexture,
+                     playButtonTexture :: MmaTexture,
+                     saveButtonTexture :: MmaTexture,
+                     nextSprtButtonTexture :: MmaTexture,
+                     prevSprtButtonTexture :: MmaTexture,
+                     nextBgButtonTexture :: MmaTexture,
+                     prevBgButtonTexture :: MmaTexture,
+                     nextFrameButtonTexture :: MmaTexture,
+                     prevFramButtonTexture :: MmaTexture
+                   } deriving Show

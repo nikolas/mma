@@ -14,7 +14,6 @@ import Graphics.UI.SDL.Image as SDLImage
 import Graphics.UI.SDL.Types
 import Graphics.UI.SDL.Video (freeSurface)
 
-import State
 import Util
 
 glRunAs2D :: IO () -> IO ()
@@ -56,13 +55,27 @@ loadTexture filepath = do
 loadAllTextures :: IO MmaTextures
 loadAllTextures = do
     introtex <- loadTexture "intro.png"
-    playtex <- loadTexture "play.png"
     menutex <- loadTexture "menu.png"
+    playtex <- loadTexture "play.png"
+    savetex <- loadTexture "save.png"
+    uparrow <- loadTexture "uparrow.png"
+    downarrow <- loadTexture "downarrow.png"
 
     return ( MmaTextures {
         introTexture = introtex,
-        playTexture = playtex,
-        menuTexture = menutex
+        menuTexture = menutex,
+        playButtonTexture = playtex,
+
+        saveButtonTexture = savetex,
+
+        nextSprtButtonTexture = uparrow,
+        prevSprtButtonTexture = downarrow,
+
+        nextBgButtonTexture = uparrow,
+        prevBgButtonTexture = downarrow,
+
+        nextFrameButtonTexture = uparrow,
+        prevFramButtonTexture = downarrow
         } )
 
 freeTexture :: MmaTexture -> IO ()
