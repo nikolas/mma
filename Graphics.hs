@@ -75,7 +75,7 @@ loadAllTextures = do
         prevBgButtonTexture = downarrow,
 
         nextFrameButtonTexture = uparrow,
-        prevFramButtonTexture = downarrow
+        prevFrameButtonTexture = downarrow
         } )
 
 freeTexture :: MmaTexture -> IO ()

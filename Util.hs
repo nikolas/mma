@@ -58,5 +58,5 @@ data MmaTextures = MmaTextures
                      nextBgButtonTexture :: MmaTexture,
                      prevBgButtonTexture :: MmaTexture,
                      nextFrameButtonTexture :: MmaTexture,
-                     prevFramButtonTexture :: MmaTexture
+                     prevFrameButtonTexture :: MmaTexture
                    } deriving Show

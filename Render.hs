@@ -41,10 +41,19 @@ drawSprite s = do
       renderPrimitive Quads $ mapM_ vertex $ selectPoints s
     else return ()
 
+-- TODO: is there a better way????
 drawMenu :: MmaMenu -> MmaTextures -> IO ()
 drawMenu m t = do
   drawTexture 0 0 (menuTexture t) 1
   drawButton (playButton m) (playButtonTexture t)
+  drawButton (saveButton m) (saveButtonTexture t)
+  drawButton (nextSprtButton m) (nextSprtButtonTexture t)
+  drawButton (prevSprtButton m) (prevSprtButtonTexture t)
+  drawButton (nextBgButton m) (nextBgButtonTexture t)
+  drawButton (prevBgButton m) (prevBgButtonTexture t)
+  drawButton (nextFrameButton m) (nextFrameButtonTexture t)
+  drawButton (prevFrameButton m) (prevFrameButtonTexture t)
+
 
 drawButton :: MmaButton -> MmaTexture -> IO ()
 drawButton (MmaButton r _) tex = do
