@@ -1,17 +1,15 @@
 module Sprite (
   Sprite(..),
-  Rectangle(..),
   makeSprite,
   spritePoints,
   selectPoints,
   initDragSprite,
   dragSprite,
   within,
-
-  vertexRect,
 ) where
 import Graphics.UI.GLUT
 
+import Rectangle
 import Util
 
 data Sprite =
@@ -36,12 +34,7 @@ spritePoints s = vertexRect $ rectangle s
 
 -- calculate a rectangle around the sprite
 selectPoints :: Sprite -> [Vertex2 GLdouble]
-selectPoints s = vertexRect $ r
-                                { rectWidth = rectWidth r + 8.0,
-                                  rectHeight = rectHeight r + 8.0
-                                }
-                                  where
-                                    r = rectangle s
+selectPoints s = vertexRect $ boxAroundRect (rectangle s) 8.0
 
 -- start dragging a sprite
 initDragSprite :: Position -> Sprite -> Sprite
@@ -70,13 +63,3 @@ within (Position px py) (Sprite (Rectangle rx ry rw rh) _ _ _ _) =
       x = conv px
       y = conv py
 
--- return a list of four vertices for a rectangle, given position and size
-vertexRect :: Rectangle -> [Vertex2 GLdouble]
-vertexRect (Rectangle x y width height) =
-    [(Vertex2 (x-w) (y+h))
-    , (Vertex2 (x-w) (y-h))
-    , (Vertex2 (x+w) (y-h))
-    , (Vertex2 (x+w) (y+h))]
-    where
-      w = width / 2
-      h = height / 2

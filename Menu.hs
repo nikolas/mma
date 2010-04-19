@@ -3,8 +3,11 @@ module Menu (
   MmaMenu(..),
   MmaWindow(..),
   initialMenu,
-  ) where
+  selectButton,
+) where
+import Graphics.UI.GLUT
 
+import Rectangle
 import Util
 
 data MmaMenu = MmaMenu
@@ -56,6 +59,10 @@ data MmaButton = MmaButton
 
                    buttonState :: Bool
                  } deriving Show
+
+-- calculate a rectangle around the button
+selectButton :: MmaButton -> [Vertex2 GLdouble]
+selectButton b = vertexRect $ boxAroundRect (buttonRect b) 2.0
 
 data MmaWindow = MmaWindow
                  {

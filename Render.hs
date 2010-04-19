@@ -5,6 +5,7 @@ import Graphics.UI.GLUT
 
 import Graphics
 import Menu
+import Rectangle
 import Sprite
 import State
 import Util
@@ -27,7 +28,6 @@ drawIntro e t = do
           (((clock $ vars $ e) `div` 10) `mod` (conv h*2))
   drawTexture 0 0 (introTexture t) 0.25
   drawTexture 0 y (introTexture t) 1
-
 
 drawSprite :: Sprite -> IO ()
 drawSprite s = do
@@ -54,7 +54,12 @@ drawMenu m t = do
   drawButton (nextFrameButton m) (nextFrameButtonTexture t)
   drawButton (prevFrameButton m) (prevFrameButtonTexture t)
 
-
 drawButton :: MmaButton -> MmaTexture -> IO ()
-drawButton (MmaButton r _) tex = do
-  drawTexture (rectX r) (rectY r) tex 1
+drawButton b tex = do
+  drawTexture (rectX (buttonRect b)) (rectY (buttonRect b)) tex 1
+
+  if buttonState b
+    then do
+      currentColor $= Color4 0.85 0 0.4 0.2
+      renderPrimitive Quads $ mapM_ vertex $ selectButton b
+    else return ()

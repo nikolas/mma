@@ -5,7 +5,6 @@ module Util (
     Pos,
     MmaTexture(..),
     MmaTextures(..),
-    Rectangle(..),
 ) where
 import Graphics.UI.GLUT
 
@@ -30,15 +29,6 @@ posConv (Position x y) = (conv x,conv y)
 -- apply a binary function on a Pos
 posOp :: (GLdouble -> GLdouble -> GLdouble) -> Pos -> Pos -> Pos
 posOp op (a,b) (x,y) = (a `op` x, b `op` y)
-
-data Rectangle =
-  Rectangle
-  {
-    rectX :: GLdouble,
-    rectY :: GLdouble,
-    rectWidth :: GLdouble,
-    rectHeight :: GLdouble
-  } deriving (Show, Eq)
 
 data MmaTexture = MmaTexture
                   {
