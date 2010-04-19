@@ -5,7 +5,6 @@ module Sprite (
   selectPoints,
   initDragSprite,
   dragSprite,
-  within,
 ) where
 import Graphics.UI.GLUT
 
@@ -53,13 +52,3 @@ dragSprite p s =
         newRect = (rectangle s){rectX = newX, rectY = newY}
 
         (newX,newY) = posOp (+) (posConv p) (offset s)
-
--- returns True if the point lies within the sprite's area
-within :: Position -> Sprite -> Bool
-within (Position px py) (Sprite (Rectangle rx ry rw rh) _ _ _ _) =
-  (x <= (rx+(rw/2))) && (x >= (rx-(rw/2)))
-  && (y <= (ry+(rh/2))) && (y >= (ry-(rh/2)))
-    where
-      x = conv px
-      y = conv py
-

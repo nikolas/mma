@@ -6,6 +6,7 @@ import Data.IORef
 import Data.List ((\\))
 import Graphics.UI.GLUT
 
+import Rectangle
 import State
 import Sprite
 
@@ -49,6 +50,8 @@ animatorAction e (MouseButton RightButton) Down =
 
 animatorAction e (MouseButton LeftButton) Down =
   e { sprites = (updateSelected . updateDragged) (sprites e) }
+      -- TODO: map over MmaMenu?
+      --vars { menu 
     where
       -- TODO: just look at this mess!
       updateSelected :: [Sprite] -> [Sprite]
@@ -60,7 +63,7 @@ animatorAction e (MouseButton LeftButton) Down =
                          (ss \\ spriteUnder ss)
 
       spriteUnder :: [Sprite] -> [Sprite]
-      spriteUnder ss = oneOrNone $ filter (within mp) ss
+      spriteUnder ss = oneOrNone $ filter ((within mp) . rectangle) ss
 
       -- stupid... Maybe I should learn how to use Maybe?
       oneOrNone :: [a] -> [a]
