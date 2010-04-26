@@ -6,6 +6,7 @@ import Data.IORef
 import Data.List ((\\))
 import Graphics.UI.GLUT
 
+import Menu
 import Rectangle
 import State
 import Sprite
@@ -49,11 +50,33 @@ animatorAction e (MouseButton RightButton) Down =
   e { sprites = (makeSprite (mousePos $ vars $ e))  : sprites e }
 
 animatorAction e (MouseButton LeftButton) Down =
-  e { sprites = (updateSelected . updateDragged) (sprites e) }
+  e { sprites = (updateSelected . updateDragged) (sprites e),
+
       -- TODO: map over MmaMenu?
-      --vars { menu 
+      vars = (vars e) { menu = MmaMenu {
+          playButton = updateButton $ (playButton$menu$vars$e),
+
+          sprtWindow  = updateWindow $ (sprtWindow$menu$vars$e),
+          nextSprtButton  = updateButton $ (nextSprtButton$menu$vars$e),
+          prevSprtButton  = updateButton $ (prevSprtButton$menu$vars$e),
+
+          bgWindow  = updateWindow $ (bgWindow$menu$vars$e),
+          nextBgButton  = updateButton $ (nextBgButton$menu$vars$e),
+          prevBgButton  = updateButton $ (prevBgButton$menu$vars$e),
+
+          frameWindow  = updateWindow $ (frameWindow$menu$vars$e),
+          prevFrameButton  = updateButton $ (prevFrameButton$menu$vars$e),
+          nextFrameButton  = updateButton $ (nextFrameButton$menu$vars$e),
+
+          saveButton  = updateButton $ (saveButton$menu$vars$e)
+        }
+      }
+    }
+
     where
+      --
       -- TODO: just look at this mess!
+      --
       updateSelected :: [Sprite] -> [Sprite]
       updateSelected ss = map (\s -> s {selected=True}) (spriteUnder ss) ++
                           map (\s -> s {selected=False}) (ss \\ (spriteUnder ss))
@@ -68,6 +91,12 @@ animatorAction e (MouseButton LeftButton) Down =
       -- stupid... Maybe I should learn how to use Maybe?
       oneOrNone :: [a] -> [a]
       oneOrNone x = if length x >= 1 then [head x] else []
+
+      updateButton :: MmaButton -> MmaButton
+      updateButton b = b { buttonState = within mp (buttonRect b) }
+
+      updateWindow :: MmaWindow -> MmaWindow
+      updateWindow w = w
 
       mp :: Position
       mp = mousePos $ vars $ e
