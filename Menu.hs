@@ -26,8 +26,8 @@ data MmaMenu = MmaMenu
 
                  -- stepper
                  frameWindow :: MmaWindow,
-                 prevFrameButton :: MmaButton,
                  nextFrameButton :: MmaButton,
+                 prevFrameButton :: MmaButton,
 
                  saveButton :: MmaButton
                } deriving Show
@@ -50,6 +50,20 @@ initialMenu = MmaMenu {
   nextFrameButton = MmaButton (Rectangle 465 15 60 70) False,
   prevFrameButton = MmaButton (Rectangle 535 15 60 70) False
   }
+
+  {-
+instance Functor MmaMenu where
+  fmap f m = m {
+    playButton = f (playButton m),
+    nextSprtButton = f (nextSprtButton m),
+    prevSprtButton = f (prevSprtButton m),
+    nextBgButton = f (nextBgButton m),
+    prevBgButton = f (prevBgButton m),
+    nextFrameButton = f (nextFrameButton m),
+    prevFrameButton = f (prevFrameButton m),
+    saveButton = f (saveButton m)
+  }
+  -}
 
 data MmaButton = MmaButton
                  {
