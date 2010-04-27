@@ -15,6 +15,7 @@ import Graphics.UI.SDL.Types
 import Graphics.UI.SDL.Video (freeSurface)
 
 import Util
+import Paths_mma (getDataDir)
 
 glRunAs2D :: IO () -> IO ()
 glRunAs2D draw = do
@@ -54,29 +55,29 @@ loadTexture filepath = do
 
 loadAllTextures :: IO MmaTextures
 loadAllTextures = do
-    introtex <- loadTexture "intro.png"
-    menutex <- loadTexture "menu.png"
-    playtex <- loadTexture "play.png"
-    savetex <- loadTexture "save.png"
-    uparrow <- loadTexture "uparrow.png"
-    downarrow <- loadTexture "downarrow.png"
+  dataPath <- getDataDir
+  introtex <- loadTexture $ dataPath ++ "/data/intro.png"
+  menutex <- loadTexture $ dataPath ++ "/data/menu.png"
+  playtex <- loadTexture $ dataPath ++ "/data/play.png"
+  savetex <- loadTexture $ dataPath ++ "/data/save.png"
+  uparrow <- loadTexture $ dataPath ++ "/data/uparrow.png"
+  downarrow <- loadTexture $ dataPath ++ "/data/downarrow.png"
+  return ( MmaTextures {
+              introTexture = introtex,
+              menuTexture = menutex,
+              playButtonTexture = playtex,
 
-    return ( MmaTextures {
-        introTexture = introtex,
-        menuTexture = menutex,
-        playButtonTexture = playtex,
+              saveButtonTexture = savetex,
 
-        saveButtonTexture = savetex,
+              nextSprtButtonTexture = uparrow,
+              prevSprtButtonTexture = downarrow,
 
-        nextSprtButtonTexture = uparrow,
-        prevSprtButtonTexture = downarrow,
+              nextBgButtonTexture = uparrow,
+              prevBgButtonTexture = downarrow,
 
-        nextBgButtonTexture = uparrow,
-        prevBgButtonTexture = downarrow,
-
-        nextFrameButtonTexture = uparrow,
-        prevFrameButtonTexture = downarrow
-        } )
+              nextFrameButtonTexture = uparrow,
+              prevFrameButtonTexture = downarrow
+              } )
 
 freeTexture :: MmaTexture -> IO ()
 freeTexture tex = do

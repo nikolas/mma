@@ -51,14 +51,12 @@ initialMenu = MmaMenu {
   prevFrameButton = MmaButton (Rectangle ((m!!3)+70) 35 60 60) False
   }
   where
-    m = mkMenu 640
+    m = mkMenu 640 140 15
 
--- a list of button x-positions that fit in a window of width x
-mkMenu :: GLdouble -> [GLdouble]
-mkMenu x = [sp, (sp*2)+wd .. x]
-  where
-    sp = 15  -- free space between buttons
-    wd = 140 -- button width
+-- A list of button x-positions that fit in a window of width wwd. bwd is
+-- button width, and sp is space between buttons.
+mkMenu :: GLdouble -> GLdouble -> GLdouble -> [GLdouble]
+mkMenu wwd bwd sp = [sp, (sp*2)+bwd .. wwd]
 
   {-
 instance Functor MmaMenu where

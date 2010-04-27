@@ -1,0 +1,14 @@
+Name:          mma
+Version:       0.0
+Description:   Cartoon animator
+License:       OtherLicense
+Author:        Nik
+Maintainer:    nnyby@sdf.lonestar.org
+Build-Type:    Simple
+Cabal-Version: >=1.2
+Data-Files:    data/*.png
+
+Executable mma
+  Ghc-Options:    -Wall -O2
+  Main-is:        Mma.hs
+  Build-Depends:  base >= 3, GLUT, SDL, SDL-image

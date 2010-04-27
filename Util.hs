@@ -1,10 +1,10 @@
 module Util (
-    conv,
-    posConv,
-    posOp,
-    Pos,
-    MmaTexture(..),
-    MmaTextures(..),
+  conv,
+  posConv,
+  posOp,
+  Pos,
+  MmaTexture(..),
+  MmaTextures(..),
 ) where
 import Graphics.UI.GLUT
 
