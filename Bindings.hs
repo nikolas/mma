@@ -60,7 +60,7 @@ animatorAction e (MouseButton LeftButton) Down =
   -- TODO: just look at this mess!
   --
   e { sprites = (updateSelected . updateDragged) (sprites e),
-      vars = (vars e) { menu = buttonMap updateButton (menu$vars$e) }
+      vars = (vars e) { menu = buttonMap buttonSweep (menu$vars$e) }
     }
     where
       updateSelected :: [Sprite] -> [Sprite]
@@ -74,10 +74,15 @@ animatorAction e (MouseButton LeftButton) Down =
       spriteUnder :: [Sprite] -> [Sprite]
       spriteUnder ss = oneOrNone $ filter ((within mp) . rectangle) ss
 
+      buttonSweep :: MmaButton -> MmaButton
+      buttonSweep b = if within mp (buttonRect b)
+                      then updateButton b
+                      else b
+
       updateButton :: MmaButton -> MmaButton
-      updateButton b = b { buttonState = if within mp (buttonRect b)
-                                         then not $ buttonState b
-                                         else buttonState b }
+      updateButton b = b { buttonState = not (buttonState b) }
+--      updateButton b = case b of
+--        nextSprtButton -> 
 
       updateWindow :: MmaWindow -> MmaWindow
       updateWindow w = w

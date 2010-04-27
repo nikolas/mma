@@ -71,25 +71,11 @@ buttonMap f m = m {
 mkMenu :: GLdouble -> GLdouble -> GLdouble -> [GLdouble]
 mkMenu wwd bwd sp = [sp, (sp*2)+bwd .. wwd]
 
-  {-
-instance Functor MmaMenu where
-  fmap f m = m {
-    playButton = f (playButton m),
-    nextSprtButton = f (nextSprtButton m),
-    prevSprtButton = f (prevSprtButton m),
-    nextBgButton = f (nextBgButton m),
-    prevBgButton = f (prevBgButton m),
-    nextFrameButton = f (nextFrameButton m),
-    prevFrameButton = f (prevFrameButton m),
-    saveButton = f (saveButton m)
-  }
-  -}
-
 data MmaButton = MmaButton
                  {
                    buttonRect :: Rectangle,
 
-        --buttonTex :: MmaTexture,
+                   --buttonTex :: MmaTexture,
 
                    buttonState :: Bool
                  } deriving Show
