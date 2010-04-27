@@ -13,8 +13,10 @@ import Util
 drawWorld :: Env -> MmaTextures -> IO ()
 drawWorld e =
   case (mode $ vars $ e) of
-    Intro -> drawIntro e
     Animator -> drawAnimator e
+    Intro -> drawIntro e
+    Play -> drawAnimator e
+    Record -> drawAnimator e
 
 drawAnimator :: Env -> MmaTextures -> IO ()
 drawAnimator e t = do

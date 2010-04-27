@@ -2,6 +2,7 @@ module Menu (
   MmaButton(..),
   MmaMenu(..),
   MmaWindow(..),
+  buttonMap,
   initialMenu,
   selectButtonRect,
 ) where
@@ -52,6 +53,18 @@ initialMenu = MmaMenu {
   }
   where
     m = mkMenu 640 140 15
+
+buttonMap :: (MmaButton -> MmaButton) -> MmaMenu -> MmaMenu
+buttonMap f m = m {
+  playButton = f $ playButton m,
+  nextSprtButton = f $ nextSprtButton m,
+  prevSprtButton = f $ prevSprtButton m,
+  nextBgButton = f $ nextBgButton m,
+  prevBgButton = f $ prevBgButton m,
+  nextFrameButton = f $ nextFrameButton m,
+  prevFrameButton = f $ prevFrameButton m,
+  saveButton = f $ saveButton m
+  }
 
 -- A list of button x-positions that fit in a window of width wwd. bwd is
 -- button width, and sp is space between buttons.

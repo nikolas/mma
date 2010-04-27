@@ -60,25 +60,7 @@ animatorAction e (MouseButton LeftButton) Down =
   -- TODO: just look at this mess!
   --
   e { sprites = (updateSelected . updateDragged) (sprites e),
-      -- TODO: map over MmaMenu?
-      vars = (vars e) { menu = MmaMenu {
-          playButton = updateButton $ (playButton$menu$vars$e),
-
-          sprtWindow  = updateWindow $ (sprtWindow$menu$vars$e),
-          nextSprtButton  = updateButton $ (nextSprtButton$menu$vars$e),
-          prevSprtButton  = updateButton $ (prevSprtButton$menu$vars$e),
-
-          bgWindow  = updateWindow $ (bgWindow$menu$vars$e),
-          nextBgButton  = updateButton $ (nextBgButton$menu$vars$e),
-          prevBgButton  = updateButton $ (prevBgButton$menu$vars$e),
-
-          frameWindow  = updateWindow $ (frameWindow$menu$vars$e),
-          prevFrameButton  = updateButton $ (prevFrameButton$menu$vars$e),
-          nextFrameButton  = updateButton $ (nextFrameButton$menu$vars$e),
-
-          saveButton  = updateButton $ (saveButton$menu$vars$e)
-        }
-      }
+      vars = (vars e) { menu = buttonMap updateButton (menu$vars$e) }
     }
     where
       updateSelected :: [Sprite] -> [Sprite]
@@ -108,10 +90,15 @@ animatorAction e (MouseButton LeftButton) Down =
       mp = mousePos $ vars $ e
 
 animatorAction e (MouseButton LeftButton) Up =
-  e { sprites = unsticky (sprites e) }
+  e { sprites = unsticky (sprites e),
+      vars = (vars e) { menu = buttonMap deactButton (menu$vars$e) }
+    }
     where
       unsticky :: [Sprite] -> [Sprite]
       unsticky = map (\s -> s {sticky = False})
+
+      deactButton :: MmaButton -> MmaButton
+      deactButton b = b { buttonState = False }
 
 animatorAction e _ _ = e
 
