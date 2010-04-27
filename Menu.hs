@@ -3,7 +3,7 @@ module Menu (
   MmaMenu(..),
   MmaWindow(..),
   initialMenu,
-  selectButton,
+  selectButtonRect,
 ) where
 import Graphics.UI.GLUT
 
@@ -34,22 +34,31 @@ data MmaMenu = MmaMenu
 
 initialMenu :: MmaMenu
 initialMenu = MmaMenu {
-  playButton = MmaButton (Rectangle 15 95 140 70) False,
+  playButton = MmaButton (Rectangle (m!!0) 105 140 60) False,
 
-  sprtWindow = MmaWindow (Rectangle 165 95 140 70) [] (-1),
-  nextSprtButton = MmaButton (Rectangle 315 95 60 70) False,
-  prevSprtButton = MmaButton (Rectangle 385 95 60 70) False,
+  sprtWindow = MmaWindow (Rectangle (m!!1) 105 140 60) [] (-1),
+  nextSprtButton = MmaButton (Rectangle (m!!2) 105 60 60) False,
+  prevSprtButton = MmaButton (Rectangle ((m!!2)+70) 105 60 60) False,
 
-  saveButton = MmaButton (Rectangle 455 95 140 70) False,
+  saveButton = MmaButton (Rectangle (m!!3) 105 140 60) False,
 
-  bgWindow = MmaWindow (Rectangle 15 15 140 70) [] (-1),
-  nextBgButton = MmaButton (Rectangle 165 15 60 70) False,
-  prevBgButton = MmaButton (Rectangle 235 15 60 70) False,
+  bgWindow = MmaWindow (Rectangle (m!!0) 35 140 60) [] (-1),
+  nextBgButton = MmaButton (Rectangle (m!!1) 35 60 60) False,
+  prevBgButton = MmaButton (Rectangle ((m!!1)+70) 35 60 60) False,
 
-  frameWindow = MmaWindow (Rectangle 315 15 140 70) [] (-1),
-  nextFrameButton = MmaButton (Rectangle 465 15 60 70) False,
-  prevFrameButton = MmaButton (Rectangle 535 15 60 70) False
+  frameWindow = MmaWindow (Rectangle (m!!2) 35 140 60) [] (-1),
+  nextFrameButton = MmaButton (Rectangle (m!!3) 35 60 60) False,
+  prevFrameButton = MmaButton (Rectangle ((m!!3)+70) 35 60 60) False
   }
+  where
+    m = mkMenu 640
+
+-- a list of button x-positions that fit in a window of width x
+mkMenu :: GLdouble -> [GLdouble]
+mkMenu x = [sp, (sp*2)+wd .. x]
+  where
+    sp = 15  -- free space between buttons
+    wd = 140 -- button width
 
   {-
 instance Functor MmaMenu where
@@ -75,8 +84,8 @@ data MmaButton = MmaButton
                  } deriving Show
 
 -- calculate a rectangle around the button
-selectButton :: MmaButton -> [Vertex2 GLdouble]
-selectButton b = vertexRect $ boxAroundRect (buttonRect b) 2.0
+selectButtonRect :: MmaButton -> Rectangle
+selectButtonRect b = boxAroundRect (buttonRect b) 4.0
 
 data MmaWindow = MmaWindow
                  {

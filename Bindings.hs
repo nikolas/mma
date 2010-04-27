@@ -93,7 +93,9 @@ animatorAction e (MouseButton LeftButton) Down =
       oneOrNone x = if length x >= 1 then [head x] else []
 
       updateButton :: MmaButton -> MmaButton
-      updateButton b = b { buttonState = within mp (buttonRect b) }
+      updateButton b = b { buttonState = if within mp (buttonRect b)
+                                         then not $ buttonState b
+                                         else buttonState b }
 
       updateWindow :: MmaWindow -> MmaWindow
       updateWindow w = w

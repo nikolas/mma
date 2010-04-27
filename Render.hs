@@ -44,7 +44,7 @@ drawSprite s = do
 -- TODO: is there a better way????
 drawMenu :: MmaMenu -> MmaTextures -> IO ()
 drawMenu m t = do
-  drawTexture 0 0 (menuTexture t) 1
+  --drawTexture 0 0 (menuTexture t) 1
   drawButton (playButton m) (playButtonTexture t)
   drawButton (saveButton m) (saveButtonTexture t)
   drawButton (nextSprtButton m) (nextSprtButtonTexture t)
@@ -56,10 +56,14 @@ drawMenu m t = do
 
 drawButton :: MmaButton -> MmaTexture -> IO ()
 drawButton b tex = do
-  drawTexture (rectX (buttonRect b)) (rectY (buttonRect b)) tex 1
-
+  -- draw selected button highlight
   if buttonState b
     then do
-      currentColor $= Color4 0.85 0 0.4 0.2
-      renderPrimitive Quads $ mapM_ vertex $ selectButton b
-    else return ()
+      currentColor $= Color4 0.85 0 0.4 0
+      renderPrimitive Quads $ mapM_ vertex $ vertexRect $ selectButtonRect b
+    else
+      return ()
+
+  currentColor $= Color4 0.4 0.4 0.8 0
+  renderPrimitive Quads $ mapM_ vertex $ vertexRect $ buttonRect b
+  --drawTexture (rectX (buttonRect b)) (rectY (buttonRect b)) tex 1
