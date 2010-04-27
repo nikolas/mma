@@ -5,6 +5,7 @@ module Sprite (
   selectPoints,
   initDragSprite,
   dragSprite,
+  dragSpriteUpdatingPath,
 ) where
 import Graphics.UI.GLUT
 
@@ -14,12 +15,16 @@ import Util
 data Sprite =
   Sprite {
     rectangle :: Rectangle,
+
     -- recorded path
     spritePath :: [Position],
+
     -- is it being dragged?
     sticky :: Bool,
+
     -- is it selected?
     selected :: Bool,
+
     -- mouse offset for dragging
     offset :: Pos
     } deriving (Show, Eq)
@@ -33,7 +38,7 @@ spritePoints s = vertexRect $ rectangle s
 
 -- calculate a rectangle around the sprite
 selectPoints :: Sprite -> [Vertex2 GLdouble]
-selectPoints s = vertexRect $ boxAroundRect (rectangle s) 8.0
+selectPoints s = vertexRect $ boxAroundRect (rectangle s) 4.0
 
 -- start dragging a sprite
 initDragSprite :: Position -> Sprite -> Sprite
@@ -43,12 +48,12 @@ initDragSprite offs s =
       myPos = ( (rectX$rectangle$s),(rectY$rectangle$s) )
 
 dragSprite :: Position -> Sprite -> Sprite
-dragSprite p s =
-  if sticky s
-    then s{ rectangle = newRect }
-    else s
-      where
-        newRect :: Rectangle
-        newRect = (rectangle s){rectX = newX, rectY = newY}
+dragSprite p s = s{ rectangle = newRect }
+  where
+    newRect :: Rectangle
+    newRect = (rectangle s){rectX = newX, rectY = newY}
 
-        (newX,newY) = posOp (+) (posConv p) (offset s)
+    (newX,newY) = posOp (+) (posConv p) (offset s)
+
+dragSpriteUpdatingPath :: Position -> Sprite -> Sprite
+dragSpriteUpdatingPath p s = dragSprite p s { spritePath = spritePath s ++ [p] }

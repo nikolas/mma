@@ -31,15 +31,14 @@ drawIntro e t = do
 
 drawSprite :: Sprite -> IO ()
 drawSprite s = do
-  currentColor $= Color4 0.2 0 0.3 0
-  renderPrimitive Quads $ mapM_ vertex $ spritePoints s
-
-  -- TODO: why isn't this transparent?
   if selected s
     then do
-      currentColor $= Color4 0.85 0 0.4 0.8
+      currentColor $= Color4 0.85 0 0.4 0
       renderPrimitive Quads $ mapM_ vertex $ selectPoints s
     else return ()
+
+  currentColor $= Color4 0.2 0 0.3 0
+  renderPrimitive Quads $ mapM_ vertex $ spritePoints s
 
 -- TODO: is there a better way????
 drawMenu :: MmaMenu -> MmaTextures -> IO ()

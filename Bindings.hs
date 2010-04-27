@@ -12,14 +12,17 @@ import State
 import Sprite
 
 keyboardMouse :: Window -> IORef Env -> Key -> KeyState -> Modifiers -> Position
-                 -> IO ()
+                -> IO ()
 keyboardMouse _ env key state _ _ = do
   e <- get env
 
+  -- TODO: put these modes in different files, maybe
   let
-    dispatchAction = case (mode $ vars $ e) of
-      Intro -> introAction
+    dispatchAction = case (mode$vars$e) of
       Animator -> animatorAction
+      Intro -> introAction
+      Play -> playAction
+      Record -> recordAction
 
   env $= dispatchAction e key state
 
@@ -28,9 +31,11 @@ motion env pos = do
   e <- get env
 
   let
-    dispatchMotion = case (mode $ vars $ e) of
-      Intro -> introMotion
+    dispatchMotion = case (mode$vars$e) of
       Animator -> animatorMotion
+      Intro -> introMotion
+      Play -> playMotion
+      Record -> recordMotion
 
   env $= dispatchMotion e pos
 
@@ -39,19 +44,22 @@ motion env pos = do
  - keyboard/mouse buttons
  -}
 
-introAction :: Env -> Key -> KeyState -> Env
-introAction (Env v s) (MouseButton _) Down =
-  Env (v {mode = Animator}) s
-introAction e _ _ = e
-
-animatorAction :: Env -> Key -> KeyState -> Env
+animatorAction, introAction, playAction, recordAction :: Env -> Key -> KeyState -> Env
 -- place a sprite
 animatorAction e (MouseButton RightButton) Down =
-  e { sprites = (makeSprite (mousePos $ vars $ e))  : sprites e }
+  e { sprites = ( (makeSprite (mousePos$vars$e)) { spritePath = mkPath } )
+                : sprites e }
+    where
+      -- Make the initial animation path for this sprite, using (1000,1000) as
+      -- a dummy value for "not visible"
+      mkPath :: [Position]
+      mkPath = replicate (animClock$vars$e) (Position 1000 1000) ++ [(mousePos$vars$e)]
 
 animatorAction e (MouseButton LeftButton) Down =
+  --
+  -- TODO: just look at this mess!
+  --
   e { sprites = (updateSelected . updateDragged) (sprites e),
-
       -- TODO: map over MmaMenu?
       vars = (vars e) { menu = MmaMenu {
           playButton = updateButton $ (playButton$menu$vars$e),
@@ -72,11 +80,7 @@ animatorAction e (MouseButton LeftButton) Down =
         }
       }
     }
-
     where
-      --
-      -- TODO: just look at this mess!
-      --
       updateSelected :: [Sprite] -> [Sprite]
       updateSelected ss = map (\s -> s {selected=True}) (spriteUnder ss) ++
                           map (\s -> s {selected=False}) (ss \\ (spriteUnder ss))
@@ -88,10 +92,6 @@ animatorAction e (MouseButton LeftButton) Down =
       spriteUnder :: [Sprite] -> [Sprite]
       spriteUnder ss = oneOrNone $ filter ((within mp) . rectangle) ss
 
-      -- stupid... Maybe I should learn how to use Maybe?
-      oneOrNone :: [a] -> [a]
-      oneOrNone x = if length x >= 1 then [head x] else []
-
       updateButton :: MmaButton -> MmaButton
       updateButton b = b { buttonState = if within mp (buttonRect b)
                                          then not $ buttonState b
@@ -99,6 +99,10 @@ animatorAction e (MouseButton LeftButton) Down =
 
       updateWindow :: MmaWindow -> MmaWindow
       updateWindow w = w
+
+      -- stupid... Maybe I should learn how to use Maybe?
+      oneOrNone :: [a] -> [a]
+      oneOrNone x = if length x >= 1 then [head x] else []
 
       mp :: Position
       mp = mousePos $ vars $ e
@@ -111,16 +115,29 @@ animatorAction e (MouseButton LeftButton) Up =
 
 animatorAction e _ _ = e
 
+introAction (Env v s) (MouseButton _) Down =
+  Env (v {mode = Animator}) s
+introAction e _ _ = e
+
+playAction e _ _ = e
+
+recordAction e _ _ = e
 
 {-
- - mouse motion
+ - mouse motion (mouse button held down)
  -}
 
-introMotion :: Env -> Position -> Env
-introMotion e _ = e
-
 -- drag a sprite
-animatorMotion :: Env -> Position -> Env
+animatorMotion, introMotion, playMotion, recordMotion :: Env -> Position -> Env
 animatorMotion (Env v s) p =
   -- update mouse position and any sticky sprites
-  Env v{mousePos = p} $ map (dragSprite p) s
+  Env v{mousePos = p} $ map (\x -> if sticky x then dragSprite p x else x) s
+
+introMotion e _ = e
+
+playMotion e _ = e
+
+recordMotion (Env v s) p =
+  -- update mouse position and any sticky sprites
+  Env v{mousePos = p}
+  $ map (\x -> if sticky x then dragSpriteUpdatingPath p x else x) s
