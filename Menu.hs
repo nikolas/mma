@@ -4,7 +4,10 @@ module Menu (
   MmaWindow(..),
   buttonMap,
   initialMenu,
+  menuButtons,
   selectButtonRect,
+  windowInc,
+  windowDec,
 ) where
 import Graphics.UI.GLUT
 
@@ -41,15 +44,14 @@ initialMenu = MmaMenu {
   nextSprtButton = MmaButton (Rectangle (m!!2) 105 60 60) False,
   prevSprtButton = MmaButton (Rectangle ((m!!2)+70) 105 60 60) False,
 
-  saveButton = MmaButton (Rectangle (m!!3) 105 140 60) False,
-
   bgWindow = MmaWindow (Rectangle (m!!0) 35 140 60) [] (-1),
   nextBgButton = MmaButton (Rectangle (m!!1) 35 60 60) False,
   prevBgButton = MmaButton (Rectangle ((m!!1)+70) 35 60 60) False,
 
   frameWindow = MmaWindow (Rectangle (m!!2) 35 140 60) [] (-1),
   nextFrameButton = MmaButton (Rectangle (m!!3) 35 60 60) False,
-  prevFrameButton = MmaButton (Rectangle ((m!!3)+70) 35 60 60) False
+  prevFrameButton = MmaButton (Rectangle ((m!!3)+70) 35 60 60) False,
+  saveButton = MmaButton (Rectangle (m!!3) 105 140 60) False
   }
   where
     m = mkMenu 640 140 15
@@ -66,6 +68,18 @@ buttonMap f m = m {
   saveButton = f $ saveButton m
   }
 
+menuButtons :: MmaMenu -> [MmaButton]
+menuButtons m = [
+  playButton m,
+  nextSprtButton m,
+  prevSprtButton m,
+  nextBgButton m,
+  prevBgButton m,
+  nextFrameButton m,
+  prevFrameButton m,
+  saveButton m
+  ]
+
 -- A list of button x-positions that fit in a window of width wwd. bwd is
 -- button width, and sp is space between buttons.
 mkMenu :: GLdouble -> GLdouble -> GLdouble -> [GLdouble]
@@ -78,7 +92,7 @@ data MmaButton = MmaButton
                    --buttonTex :: MmaTexture,
 
                    buttonState :: Bool
-                 } deriving Show
+                 } deriving (Show, Eq)
 
 -- calculate a rectangle around the button
 selectButtonRect :: MmaButton -> Rectangle
@@ -94,3 +108,12 @@ data MmaWindow = MmaWindow
                    -- the current texture
                    windowState :: Int
                  } deriving Show
+
+windowInc, windowDec :: MmaWindow -> MmaWindow
+windowInc w = if windowState w >= length (windowTextures w) - 1
+              then w { windowState = 0 }
+              else w { windowState = (windowState w) + 1 }
+
+windowDec w = if windowState w <= 0
+              then w { windowState = length (windowTextures w) - 1 }
+              else w { windowState = (windowState w) - 1 }

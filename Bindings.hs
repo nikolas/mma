@@ -55,14 +55,68 @@ animatorAction e (MouseButton RightButton) Down =
       mkPath :: [Position]
       mkPath = replicate (animClock$vars$e) (Position 1000 1000) ++ [(mousePos$vars$e)]
 
+--
+-- TODO: look at this mess!
+--
 animatorAction e (MouseButton LeftButton) Down =
-  --
-  -- TODO: just look at this mess!
-  --
-  e { sprites = (updateSelected . updateDragged) (sprites e),
-      vars = (vars e) { menu = buttonMap buttonSweep (menu$vars$e) }
-    }
+  (handleButtons . handleSprites) e
     where
+      handleButtons :: Env -> Env
+      handleButtons env =
+        env {
+          vars = (vars$env) { menu = updateMenu (menu$vars$env) }
+          }
+
+      -- ugh...
+      updateMenu :: MmaMenu -> MmaMenu
+      updateMenu m
+        | Just (playButton m) == thisButton =
+          m { playButton = (playButton m) { buttonState = True } }
+
+        | Just (nextSprtButton m) == thisButton =
+          m { nextSprtButton = (nextSprtButton m) { buttonState = True },
+              sprtWindow = windowInc (sprtWindow m) }
+
+        | Just (prevSprtButton m) == thisButton =
+          m { prevSprtButton = (prevSprtButton m) { buttonState = True },
+              sprtWindow = windowDec (sprtWindow m) }
+
+        | Just (nextBgButton m) == thisButton =
+          m { nextBgButton = (nextBgButton m) { buttonState = True },
+              bgWindow = windowInc (bgWindow m) }
+
+        | Just (prevBgButton m) == thisButton =
+          m { prevBgButton = (prevBgButton m) { buttonState = True },
+              bgWindow = windowInc (bgWindow m) }
+
+        | Just (nextFrameButton m) == thisButton =
+          m { nextFrameButton = (nextFrameButton m) { buttonState = True },
+              frameWindow = windowInc (frameWindow m) }
+
+        | Just (prevFrameButton m) == thisButton =
+          m { prevFrameButton = (prevFrameButton m) { buttonState = True },
+              frameWindow = windowInc (frameWindow m) }
+
+        | Just (saveButton m) == thisButton =
+          m { saveButton = (saveButton m) { buttonState = True } }
+
+        | otherwise = m
+
+      thisButton :: Maybe MmaButton
+      thisButton = if length bs >= 1
+                   then Just $ head bs
+                   else Nothing
+                     where
+                       bs :: [MmaButton]
+                       bs = filter (within mp . buttonRect)
+                            (menuButtons (menu$vars$e))
+
+      handleSprites :: Env -> Env
+      handleSprites env =
+        env {
+          sprites = (updateSelected . updateDragged) (sprites env)
+          }
+
       updateSelected :: [Sprite] -> [Sprite]
       updateSelected ss = map (\s -> s {selected=True}) (spriteUnder ss) ++
                           map (\s -> s {selected=False}) (ss \\ (spriteUnder ss))
@@ -72,20 +126,7 @@ animatorAction e (MouseButton LeftButton) Down =
                          (ss \\ spriteUnder ss)
 
       spriteUnder :: [Sprite] -> [Sprite]
-      spriteUnder ss = oneOrNone $ filter ((within mp) . rectangle) ss
-
-      buttonSweep :: MmaButton -> MmaButton
-      buttonSweep b = if within mp (buttonRect b)
-                      then updateButton b
-                      else b
-
-      updateButton :: MmaButton -> MmaButton
-      updateButton b = b { buttonState = not (buttonState b) }
---      updateButton b = case b of
---        nextSprtButton -> 
-
-      updateWindow :: MmaWindow -> MmaWindow
-      updateWindow w = w
+      spriteUnder ss = oneOrNone $ filter ((within mp) . spriteRect) ss
 
       -- stupid... Maybe I should learn how to use Maybe?
       oneOrNone :: [a] -> [a]
