@@ -11,7 +11,7 @@ bindings, and also SDL and SDL-image.
 To install it with cabal, do: cabal install --prefix=$HOME --user
 
 If you don't have cabal, you can probably build it like this:
-    ghc --make -package GLUT -O2 Main.hs -o mma
+    ghc --make -package GLUT -O2 Mma.hs -o mma
 
 Influences:
 	* Raincat: http://bysusanlin.com/raincat/
