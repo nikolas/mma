@@ -8,7 +8,7 @@ Just messing around with OpenGL right now...
 To build it you'll need ghc (probably >= 6.8.x) with the OpenGL and GLUT
 bindings, and also SDL and SDL-image.
 
-To install it with cabal, do: cabal install --prefix=$HOME --user
+To install it with cabal, do: cabal install --user
 
 If you don't have cabal, you can probably build it like this:
     ghc --make -package GLUT -O2 Mma.hs -o mma
