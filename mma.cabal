@@ -11,4 +11,4 @@ Data-Files:    data/*.png
 Executable mma
   Ghc-Options:    -Wall -O2
   Main-is:        Mma.hs
-  Build-Depends:  base >= 3, GLUT, SDL, SDL-image
+  Build-Depends:  base >= 4, GLUT, SDL, SDL-image

@@ -52,7 +52,6 @@ main = do
            trans pos >>= moveCursor >> postRedisplay Nothing)
 
   mainLoop
-  -- TODO: stop using all the CPU, silly!
 
 idle :: IORef Env -> IO ()
 idle env = do

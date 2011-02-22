@@ -42,10 +42,8 @@ drawSprite s = do
   currentColor $= Color4 0.2 0 0.3 0
   renderPrimitive Quads $ mapM_ vertex $ spritePoints s
 
--- TODO: is there a better way????
 drawMenu :: MmaMenu -> MmaTextures -> IO ()
 drawMenu m t = do
-  --drawTexture 0 0 (menuTexture t) 1
   drawButton (playButton m) (playButtonTexture t)
   drawButton (saveButton m) (saveButtonTexture t)
   drawButton (nextSprtButton m) (nextSprtButtonTexture t)
