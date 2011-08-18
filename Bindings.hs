@@ -16,7 +16,6 @@ keyboardMouse :: Window -> IORef Env -> Key -> KeyState -> Modifiers -> Position
 keyboardMouse _ env key state _ _ = do
   e <- get env
 
-  -- TODO: put these modes in different files, maybe
   let
     dispatchAction = case (mode$vars$e) of
       Animator -> animatorAction
@@ -55,9 +54,6 @@ animatorAction e (MouseButton RightButton) Down =
       mkPath :: [Position]
       mkPath = replicate (animClock$vars$e) (Position 1000 1000) ++ [(mousePos$vars$e)]
 
---
--- TODO: look at this mess!
---
 animatorAction e (MouseButton LeftButton) Down =
   (handleButtons . handleSprites) e
     where
@@ -67,7 +63,6 @@ animatorAction e (MouseButton LeftButton) Down =
           vars = (vars$env) { menu = updateMenu (menu$vars$env) }
           }
 
-      -- ugh...
       updateMenu :: MmaMenu -> MmaMenu
       updateMenu m
         | Just (playButton m) == thisButton =
@@ -118,8 +113,9 @@ animatorAction e (MouseButton LeftButton) Down =
           }
 
       updateSelected :: [Sprite] -> [Sprite]
-      updateSelected ss = map (\s -> s {selected=True}) (spriteUnder ss) ++
-                          map (\s -> s {selected=False}) (ss \\ (spriteUnder ss))
+      updateSelected ss = map (\s -> s {selected=False}) (ss \\ (spriteUnder ss)) ++
+                          map (\s -> s {selected=True}) (spriteUnder ss)
+
 
       updateDragged :: [Sprite] -> [Sprite]
       updateDragged ss = map (initDragSprite mp) (spriteUnder ss) ++
